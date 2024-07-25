@@ -20,7 +20,7 @@ void init_game(void) {
 }  
 
 Image loaded_image[30] = {0};
-Texture2D texture_v[30 * (324)] = {0};
+Texture2D texture_v[144 * 30] = {0};
 void load_maps_texture() {
     char path_buff[124] = {0};
     for (uint8_t imgindex = 0; imgindex < 30; imgindex++) {
@@ -28,8 +28,12 @@ void load_maps_texture() {
         loaded_image[imgindex]  = LoadImage(path_buff);
     }
     
-    // 32 x 32 
-    // 384 x 384
+
+    // Craete text_v
+    uint32_t sprite_index = 0;
+    for (uint16_t plate_index = 0; plate_index < 30; plate_index++) {
+        
+    }
 }
 
 void draw_ui() {
@@ -37,14 +41,17 @@ void draw_ui() {
 }
 
 void draw_game() {
-    for (uint8_t drawid = 0; drawid < 30; drawid++) { 
-        Texture2D text = LoadTextureFromImage(loaded_image[drawid]);
-
-        ClearBackground(DARKGRAY);
-        BeginDrawing();
-        DrawTexture(text, screenWidth/2, screenHeight/2, WHITE);
-        EndDrawing();
+    BeginDrawing();
+    uint32_t row = 0;
+    uint32_t colum = 0;
+    for (uint8_t drawid = 0; drawid < 144; drawid++) { 
+        DrawTexture(texture_v[drawid], 32*colum++, row, WHITE);
+        if (drawid % 10 == 0 && drawid != 0) {
+            colum = 0;
+            row += 32;
+        }
     }
+    EndDrawing();
 }
  
 void draw_frame() {
@@ -58,7 +65,7 @@ int main(void) {
     while (!WindowShouldClose()) {
         // Take user input
         // Update game state 
-        // Draw sheet
+        // Draw shit
 
         draw_frame();
     }
