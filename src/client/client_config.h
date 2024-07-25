@@ -1,0 +1,14 @@
+#ifndef __CLINET_CONFIG__
+#define __CLINET_CONFIG__
+
+#define MAX_SPRITES_FIELD_LOAD 30
+
+#define SPRITES_FIELD_W (384)
+#define SPRITES_FIELD_H (384)
+
+#define SPRITE_W (32)
+#define SPRITE_H (32)
+
+#define MAX_TEXTURE_LOAD ( MAX_SPRITES_FIELD_LOAD * (SPRITE_W / SPRITES_FIELD_W) * (SPRITE_H / SPRITES_FIELD_H) )
+
+#endif
