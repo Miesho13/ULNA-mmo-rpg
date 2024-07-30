@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <assert.h>
 
-#include "../raylib_inc/raylib.h"
+#include "raylib.h"
 
 
 const int screenWidth = 1980;
