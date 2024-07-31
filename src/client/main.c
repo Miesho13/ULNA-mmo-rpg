@@ -1,75 +1,65 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <assert.h>
 
 #include "raylib.h"
-
+#include "resource.h"
 
 const int screenWidth = 1980;
 const int screenHeight = 1080;
 
 void init_game(void) {
-    InitWindow(
-        screenWidth, 
-        screenHeight, 
-        "tibia game"
-    );
-    SetTargetFPS(60); 
-}  
-
-Image loaded_image[30] = {0};
-Texture2D texture_v[144 * 30] = {0};
-void load_maps_texture() {
-    char path_buff[124] = {0};
-    for (uint8_t imgindex = 0; imgindex < 30; imgindex++) {
-        sprintf(path_buff, "./resources/7.1/Sprites-%d.png", imgindex);
-        loaded_image[imgindex]  = LoadImage(path_buff);
-    }
-    
-
-    // Craete text_v
-    uint32_t sprite_index = 0;
-    for (uint16_t plate_index = 0; plate_index < 30; plate_index++) {
-        
-    }
+    InitWindow(screenWidth, screenHeight, "tibia game");
+    SetTargetFPS(60);
 }
 
-void draw_ui() {
-
-}
+void draw_ui() {}
 
 void draw_game() {
+    resource_context_t *res_ctx = resource_get_context();
+
     BeginDrawing();
     uint32_t row = 0;
     uint32_t colum = 0;
-    for (uint8_t drawid = 0; drawid < 144; drawid++) { 
-        DrawTexture(texture_v[drawid], 32*colum++, row, WHITE);
-        if (drawid % 10 == 0 && drawid != 0) {
+    for (uint8_t draw_id = 0; draw_id < 255; draw_id++) {
+        DrawTexture(res_ctx->sprite[draw_id], 32 * colum++, row, WHITE);
+        if (draw_id % 10 == 0 && draw_id != 0) {
             colum = 0;
             row += 32;
         }
     }
     EndDrawing();
 }
- 
+
 void draw_frame() {
-    draw_ui();
-    draw_game(); 
+//    draw_ui();
+//    draw_game();
 }
 
 int main(void) {
     init_game();
-    load_maps_texture();
-    while (!WindowShouldClose()) {
-        // Take user input
-        // Update game state 
-        // Draw shit
+    resource_init();
 
-        draw_frame();
+    Camera2D camera = { 
+        .offset = 0,
+        .target = (Vector2){ 0.0f, 0.0f },
+        .rotation = 0.0f,
+        .zoom = 1.0f,
+    };
+    
+
+    while (!WindowShouldClose()) {
+
+        if (IsKeyDown(KEY_RIGHT)) camera.target.x += 4;
+        if (IsKeyDown(KEY_LEFT)) camera.target.x -= 4;
+        if (IsKeyDown(KEY_UP)) camera.target.y -= 4;
+        if (IsKeyDown(KEY_DOWN)) camera.target.y += 4;
+
+        if (IsKeyDown(KEY_Z)) camera.zoom += 0.01f;
+        if (IsKeyDown(KEY_X)) camera.zoom -= 0.01f;
+
+        print_res_with_id(&camera);
     }
-    CloseWindow();        
+    CloseWindow();
     return 0;
 }
-
