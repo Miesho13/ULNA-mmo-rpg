@@ -1,3 +1,9 @@
 #!/bin/bash
 
-rm -r ./build/*
+arg=$1
+
+if [[ $1 == "all" ]]; then
+    rm -rf ./build/*
+else
+    rm -rf ./build/src/*
+fi
