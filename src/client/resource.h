@@ -16,8 +16,8 @@ typedef struct {
     uint32_t sprite_count;
 
 } resource_context_t;
-
 typedef resource_context_t* res_ctx_h;
+typedef uint32_t resource_id_t;
 
 void reso_load_image(const char *path_pattern, uint32_t img_to_load,
                      uint32_t scale); 
