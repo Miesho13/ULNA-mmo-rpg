@@ -13,32 +13,57 @@ void init_game(void) {
     SetTargetFPS(60);
 }
 
-void draw_ui() {}
 
-void draw_game() {
-    resource_context_t *res_ctx = resource_get_context();
+
+void test_canvas(uint32_t *data, uint32_t size, uint32_t w, uint32_t h, 
+        uint32_t offx, uint32_t offy) {
+    
+    res_ctx_h resh = resource_get_context();
 
     BeginDrawing();
-    uint32_t row = 0;
-    uint32_t colum = 0;
-    for (uint8_t draw_id = 0; draw_id < 255; draw_id++) {
-        DrawTexture(res_ctx->sprite[draw_id], 32 * colum++, row, WHITE);
-        if (draw_id % 10 == 0 && draw_id != 0) {
-            colum = 0;
-            row += 32;
-        }
+    ClearBackground(WHITE);
+     
+    for (uint32_t draw_id = 0; draw_id < size; draw_id++) {
+        DrawText(resh->text_sprite[draw_id], draw);
     }
+
     EndDrawing();
 }
 
-void draw_frame() {
-//    draw_ui();
-//    draw_game();
+void print_res_with_id(Camera2D *cam) {
+    resource_context_t *ctx = resource_get_context();
+    uint32_t x = 0;
+    uint32_t y = 0;
+
+    BeginDrawing();
+    ClearBackground(WHITE);
+    
+    
+
+    // draw bacgraund
+    for (uint32_t i = 0; i < ctx->sprite_count; i++) {
+         
+    }
+
+    BeginMode2D(*cam);
+
+    for (uint32_t i = 0; i < ctx->sprite_count; i++) {
+        DrawTexture(ctx->text_sprite[i], x*32*ctx->scale, y*32*ctx->scale, WHITE);
+        if ((x % 64 == 0) && (x != 0)) {
+            y++;
+            x = -1;
+        }
+        x++;
+    }
+
+    EndMode2D();
+    EndDrawing();
 }
 
 int main(void) {
     init_game();
-    resource_init();
+    reso_load_image("./resources/Sprites-%d.png", RES_MAX_IMG_TO_LOAD, 2);
+    res_ctx_h hres = resource_get_context();
 
     Camera2D camera = { 
         .offset = 0,
@@ -46,20 +71,26 @@ int main(void) {
         .rotation = 0.0f,
         .zoom = 1.0f,
     };
-    
 
+    uint32_t animation_start = 0xfa2;
+    uint32_t animation_end = 0xfb8;
+    uint32_t animation = animation_start;
     while (!WindowShouldClose()) {
 
-        if (IsKeyDown(KEY_RIGHT)) camera.target.x += 4;
-        if (IsKeyDown(KEY_LEFT)) camera.target.x -= 4;
-        if (IsKeyDown(KEY_UP)) camera.target.y -= 4;
-        if (IsKeyDown(KEY_DOWN)) camera.target.y += 4;
+        ClearBackground(BLACK);
 
-        if (IsKeyDown(KEY_Z)) camera.zoom += 0.01f;
-        if (IsKeyDown(KEY_X)) camera.zoom -= 0.01f;
+        BeginDrawing();
 
-        print_res_with_id(&camera);
+        DrawTexture(hres->text_sprite[animation++], screenWidth/2, screenHeight/2, WHITE);
+
+        EndDrawing();
+
+        if (animation == animation_end) {
+            animation = animation_start;
+        }
+        WaitTime(1);
     }
+
     CloseWindow();
     return 0;
 }
