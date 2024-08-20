@@ -69,12 +69,10 @@ void resource_load_vram(resource_texture_t *text_ctx, const char *path_pattern,
     for (uint32_t sprite_id = 0; 
          sprite_id < RES_SPRITE_IN_SHEET*sprite_sheet_to_load; 
          sprite_id++) {
-        printf("texture: %d\n", sprite_id);
         text_ctx->text[sprite_id] = LoadTextureFromImage(sprite_img[sprite_id]);
     }
     
     for (uint32_t sprite_id = 0; sprite_id < RES_SPRITE_IN_SHEET*sprite_sheet_to_load; sprite_id++) {
-        printf("Image: %d\n", sprite_id);
         UnloadImage(sprite_img[sprite_id]);
     }
 
