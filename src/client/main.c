@@ -1,94 +1,48 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #include "raylib.h"
 #include "resource.h"
+#include "renderer.h"
+#include "tile.h"
 
 const int screenWidth = 1980;
 const int screenHeight = 1080;
 
-void init_game(void) {
+int main(void) {
     InitWindow(screenWidth, screenHeight, "tibia game");
     SetTargetFPS(60);
-}
 
-
-
-void test_canvas(uint32_t *data, uint32_t size, uint32_t w, uint32_t h, 
-        uint32_t offx, uint32_t offy) {
+    resource_texture_t text_ctx; 
+    resource_load_vram(&text_ctx, "./resources/Sprites-%d.png", 1, 2);
     
-    res_ctx_h resh = resource_get_context();
+    tile_field_t tile_field = {0};
+    tile_init(&tile_field, &text_ctx, 8, 8);
 
-    BeginDrawing();
-    ClearBackground(WHITE);
-     
-    for (uint32_t draw_id = 0; draw_id < size; draw_id++) {
-        DrawText(resh->text_sprite[draw_id], draw);
-    }
+    for (int y = 0; y < 6; y++) {
+    for (int x = 0; x < 6; x++) {
+        tile_add(&tile_field, 0x0, x, y);
+    }}
 
-    EndDrawing();
-}
+    tile_add(&tile_field, 0x7, 3, 3);
 
-void print_res_with_id(Camera2D *cam) {
-    resource_context_t *ctx = resource_get_context();
-    uint32_t x = 0;
-    uint32_t y = 0;
+    sprite_t sprite_buff[64] = {0};
+    sprite_vec_t sprite_vec = {
+        .size = 0,
+        .sprites = sprite_buff
+    }; 
+    tile_get_srpite_vec(&tile_field, &sprite_vec);
 
-    BeginDrawing();
-    ClearBackground(WHITE);
-    
-    
-
-    // draw bacgraund
-    for (uint32_t i = 0; i < ctx->sprite_count; i++) {
-         
-    }
-
-    BeginMode2D(*cam);
-
-    for (uint32_t i = 0; i < ctx->sprite_count; i++) {
-        DrawTexture(ctx->text_sprite[i], x*32*ctx->scale, y*32*ctx->scale, WHITE);
-        if ((x % 64 == 0) && (x != 0)) {
-            y++;
-            x = -1;
-        }
-        x++;
-    }
-
-    EndMode2D();
-    EndDrawing();
-}
-
-int main(void) {
-    init_game();
-    reso_load_image("./resources/Sprites-%d.png", RES_MAX_IMG_TO_LOAD, 2);
-    res_ctx_h hres = resource_get_context();
-
-    Camera2D camera = { 
-        .offset = 0,
-        .target = (Vector2){ 0.0f, 0.0f },
-        .rotation = 0.0f,
-        .zoom = 1.0f,
-    };
-
-    uint32_t animation_start = 0xfa2;
-    uint32_t animation_end = 0xfb8;
-    uint32_t animation = animation_start;
-    while (!WindowShouldClose()) {
-
-        ClearBackground(BLACK);
-
+    while (WindowShouldClose() == false) {
         BeginDrawing();
+        ClearBackground(WHITE);
 
-        DrawTexture(hres->text_sprite[animation++], screenWidth/2, screenHeight/2, WHITE);
+        renderer_update(&sprite_vec);
 
+        DrawFPS(screenWidth-124, 0);
         EndDrawing();
-
-        if (animation == animation_end) {
-            animation = animation_start;
-        }
-        WaitTime(1);
     }
 
     CloseWindow();
