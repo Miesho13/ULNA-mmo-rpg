@@ -19,10 +19,7 @@ typedef enum  {
 } direction_t;
 
 typedef struct {
-    resource_id_t data[8];
-    resource_id_t begin;
-    resource_id_t end;
-
+    int i;
 } player_animation;
 
 typedef struct {

@@ -2,19 +2,9 @@
 #include "player.h"
 
 void player_init(player_ctx_t *ctx) {
-    memset(ctx, 0, sizeof(player_ctx_t));
 
-    ctx->posytion = (common_int32_vec) {
-        .x = 0,
-        .y = 0,
-    };
-
-    ctx->animation_ctx = (player_animation) {
-        .data = {0},
-        .begin = 0x34d,
-        .end = 0x356,
-    };
 }
+
 
 void player_move(player_ctx_t *ctx, direction_t dir) {
     switch(dir) {
