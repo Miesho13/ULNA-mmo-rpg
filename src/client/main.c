@@ -2,44 +2,54 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #include "raylib.h"
 #include "resource.h"
 #include "renderer.h"
-#include "tile.h"
 
-const int screenWidth = 1980;
-const int screenHeight = 1080;
+const int screenWidth = 800;
+const int screenHeight = 600;
 
 int main(void) {
     InitWindow(screenWidth, screenHeight, "tibia game");
-    SetTargetFPS(60);
+    SetTargetFPS(144);
 
-    resource_texture_t text_ctx; 
-    resource_load_vram(&text_ctx, "./resources/Sprites-%d.png", 1, 2);
+    sprites_list_t *list = rend_sprites_list_init(32);
+    printf("head: %p\nsize: %d\nsize_max: %d\n\n", 
+            (void*)list->head, 
+            list->size, 
+            list->size_max);
     
-    tile_field_t tile_field = {0};
-    tile_init(&tile_field, &text_ctx, 8, 8);
+       
+    for (int i = 0; i < 32; i++) {
+        printf("%d: head->next: %p head->val %p %f %f\n", 
+                i, (void*)list->head->next,
+                (void*)list->head->val.texutre,
+                list->head->val.pos.x,
+                list->head->val.pos.y);
 
-    for (int y = 0; y < 6; y++) {
-    for (int x = 0; x < 6; x++) {
-        tile_add(&tile_field, 0x0, x, y);
-    }}
+        list->head = list->head->next;
+    }
 
-    tile_add(&tile_field, 0x7, 3, 3);
+    sprite_node *node = prv_iterate_element(list, 12);
+    node->val.pos.x = 5;
+    node->val.pos.y = 5;
 
-    sprite_t sprite_buff[64] = {0};
-    sprite_vec_t sprite_vec = {
-        .size = 0,
-        .sprites = sprite_buff
-    }; 
-    tile_get_srpite_vec(&tile_field, &sprite_vec);
+
+    for (int i = 0; i < 32; i++) {
+        printf("%d: head->next: %p head->val %p %f %f\n", 
+                i, (void*)list->head->next,
+                (void*)list->head->val.texutre,
+                list->head->val.pos.x,
+                list->head->val.pos.y);
+
+        list->head = list->head->next;
+    }
 
     while (WindowShouldClose() == false) {
         BeginDrawing();
         ClearBackground(WHITE);
-
-        renderer_update(&sprite_vec);
 
         DrawFPS(screenWidth-124, 0);
         EndDrawing();
