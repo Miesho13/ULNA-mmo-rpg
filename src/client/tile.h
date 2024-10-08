@@ -11,6 +11,8 @@ typedef struct {
     Vector2 pos;
 } tile_t;
 
+
+
 typedef struct { 
     tile_t buffer[64]; 
     resource_texture_t *hres;
@@ -23,7 +25,7 @@ typedef struct {
 void tile_init(tile_field_t *ctx, resource_texture_t *res, uint32_t weight,
     uint32_t height);
 
-int tile_get_srpite_vec(tile_field_t *ctx, sprite_vec_t *vec);
+// int tile_get_srpite_vec(tile_field_t *ctx, sprite_vec_t *vec);
 
 void tile_add(tile_field_t *ctx, uint32_t sprite_id, uint32_t posX,
     uint32_t posY);
