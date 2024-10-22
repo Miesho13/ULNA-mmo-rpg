@@ -64,7 +64,6 @@ sprite_t rend_sprites_list_get(sprites_list_t *llist, uint32_t index) {
 }
 
 void rend_list(sprites_list_t *list) {
-    BeginDrawing();
     for (uint32_t i = 0; i < list->size; i++) {
         sprite_t tmp = rend_sprites_list_get(list, i);
         DrawTexture(
@@ -73,5 +72,4 @@ void rend_list(sprites_list_t *list) {
             WHITE
         );
     }
-    EndDrawing();
 }
