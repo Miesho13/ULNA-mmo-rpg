@@ -6,27 +6,6 @@
 #include "raylib.h"
 
 
-//typedef struct {
-//    Texture2D *sprite;
-//    Vector2 pos;
-//} sprite_t;
-//
-//typedef struct {
-//   sprite_t *sprites;  
-//   uint32_t size;
-//} sprite_vec_t;
-//
-//
-//
-//typedef struct {
-//    sprite_t *head;
-//    sprite_t *next;
-//    size_t size; 
-//} sprite_stack_t;
-//
-//
-//void renderer_update(sprite_vec_t *vtail);
-
 typedef struct {
     Texture2D *texutre;
     Vector2 pos;
@@ -42,9 +21,16 @@ typedef struct {
     sprite_node *head;
     uint32_t size;
     uint32_t size_max;
+    uint32_t counter_end;
+
 } sprites_list_t;
 
 sprites_list_t* rend_sprites_list_init(uint32_t max_size);
-sprite_node* prv_iterate_element(sprites_list_t *llist, uint32_t index);
 
+void rend_sprites_list_add(sprites_list_t *llist, sprite_t val);
+
+sprite_t rend_sprites_list_get(sprites_list_t *llist, uint32_t index);
+
+void rend_list(sprites_list_t *list);
 #endif
+

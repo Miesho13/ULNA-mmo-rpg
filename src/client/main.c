@@ -15,43 +15,29 @@ int main(void) {
     InitWindow(screenWidth, screenHeight, "tibia game");
     SetTargetFPS(144);
 
+    resource_texture_t text_ctx = {0};
+    resource_load_vram(&text_ctx, "./resources/Sprites-%d.png", 30, 2);
     sprites_list_t *list = rend_sprites_list_init(32);
-    printf("head: %p\nsize: %d\nsize_max: %d\n\n", 
-            (void*)list->head, 
-            list->size, 
-            list->size_max);
     
-       
-    for (int i = 0; i < 32; i++) {
-        printf("%d: head->next: %p head->val %p %f %f\n", 
-                i, (void*)list->head->next,
-                (void*)list->head->val.texutre,
-                list->head->val.pos.x,
-                list->head->val.pos.y);
+    int x = 0; 
+    int y = 0; 
+    for (int i = 0; i < 10; i++) {
+        rend_sprites_list_add(
+            list, (sprite_t){
+                &text_ctx.text[0], 
+                (Vector2){x*32*2, y*32*2}
+            }
+        );
 
-        list->head = list->head->next;
+        if (x++ == 4) { x = 0; y++; }
     }
-
-    sprite_node *node = prv_iterate_element(list, 12);
-    node->val.pos.x = 5;
-    node->val.pos.y = 5;
-
-
-    for (int i = 0; i < 32; i++) {
-        printf("%d: head->next: %p head->val %p %f %f\n", 
-                i, (void*)list->head->next,
-                (void*)list->head->val.texutre,
-                list->head->val.pos.x,
-                list->head->val.pos.y);
-
-        list->head = list->head->next;
-    }
-
+    
+    rend_sprites_list_add(list, (sprite_t) {&text_ctx.text[1], (Vector2){1*32*2, 0*32*2}});
     while (WindowShouldClose() == false) {
         BeginDrawing();
         ClearBackground(WHITE);
-
         DrawFPS(screenWidth-124, 0);
+        rend_list(list);
         EndDrawing();
     }
 
