@@ -2,3 +2,4 @@ build
 *.a
 src/raylib_inc/*.h
 resources
+.cache
