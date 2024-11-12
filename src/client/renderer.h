@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "raylib.h"
-
+#include "resource.h"
 
 typedef struct {
     Texture2D *texutre;
@@ -22,15 +22,18 @@ typedef struct {
     uint32_t size;
     uint32_t size_max;
     uint32_t counter_end;
+} render_vector;
 
-} sprites_list_t;
+typedef struct {
+    resource_texture_t resource_ctx;
+} renderer_ctx;
 
-sprites_list_t* rend_sprites_list_init(uint32_t max_size);
 
-void rend_sprites_list_add(sprites_list_t *llist, sprite_t val);
-
-sprite_t rend_sprites_list_get(sprites_list_t *llist, uint32_t index);
-
-void rend_list(sprites_list_t *list);
+void renderer_init(resource_texture_t *renderer_ctx);
+render_vector*  render_vecotr_init(uint32_t max_size);
+void            render_vecotr_push(render_vector *vec, sprite_t val);
+sprite_t        render_vecotr_get(render_vector *vec, uint32_t index);
+sprite_t        render_vecotr_pop(render_vector *vec, uint32_t index);
+void            render_buffer(sprites_list_t *list);
 #endif
 
