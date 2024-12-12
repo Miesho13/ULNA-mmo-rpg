@@ -1,4 +1,5 @@
 #include "renderer.h"
+#include "raylib.h"
 #include "sprite_data.h"
 #include <stdio.h>
 
@@ -43,12 +44,26 @@ static Image* prv_generate_image_buffer(sprite_loader_path_t *sheet_data, Image 
     return image_buffer;
 }
 
+static Texture* prv_load_game(renderer_ctx_t *rctx) {
+
+    Texture *text_buffer = calloc((rctx->text_buffer_size), sizeof(*text_buffer));
+
+    for (uint32_t sprite_index = 0; sprite_index  < rctx->text_buffer_size; sprite_index++) {
+        text_buffer[sprite_index] = LoadTextureFromImage(rctx->image_buffer[sprite_index]);
+    }
+
+    return text_buffer;
+}
+
 void renderer_init(renderer_ctx_t *rctx, sprite_loader_path_t *sheet_data, uint32_t scale) {
 
     Image *tmp_sheet = prv_load_sheet(sheet_data);
 
     rctx->image_buffer_size = prv_get_sprite_buffer_size(sheet_data);
     rctx->image_buffer = prv_generate_image_buffer(sheet_data, tmp_sheet, rctx->image_buffer_size);
+
+    rctx->text_buffer_size = rctx->image_buffer_size;
+    rctx->text_buffer = prv_load_game(rctx);
 
     for (uint32_t image_index = 0; image_index < sheet_data->sheet_to_load; image_index++) {
         UnloadImage(tmp_sheet[image_index]);
