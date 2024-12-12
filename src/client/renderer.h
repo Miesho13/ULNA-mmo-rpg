@@ -4,13 +4,16 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "raylib.h"
+#include "sprite_data.h"
+
 #include "resource.h"
+#include "sprite_data.h"
 
 typedef struct {
     uint32_t h;
     uint32_t w;
 } image_size_px;
- 
+
 typedef struct {
     Texture2D *texutre;
     Vector2 pos;
@@ -19,7 +22,7 @@ typedef struct {
 typedef struct sprite_node sprite_node;
 struct sprite_node {
     sprite_node *next;
-    sprite_t val; 
+    sprite_t val;
 };
 
 typedef struct {
@@ -31,10 +34,10 @@ typedef struct {
 
 typedef struct {
     Image *image_buffer;
-    size_t image_buff_size;
+    size_t image_buffer_size;
 
     Texture *text_buffer;
-    size_t text_buff_size;
+    size_t text_buffer_size;
 
     char *path_to_sprites_sheet;
     uint32_t scale;
@@ -42,8 +45,7 @@ typedef struct {
 } renderer_ctx_t;
 
 
-void renderer_init(renderer_ctx_t *rctx, const char **pattern, 
-                   uint32_t sheet_count, uint32_t scale);
+void renderer_init(renderer_ctx_t *rctx, sprite_loader_path_t *sprite_data, uint32_t scale);
 
 void renderer_load_text(renderer_ctx_t *rctx);
 void renderer_free_text(renderer_ctx_t *rctx);
@@ -54,4 +56,3 @@ sprite_t        render_vecotr_get(render_vector *vec, uint32_t index);
 sprite_t        render_vecotr_pop(render_vector *vec, uint32_t index);
 void            render_buffer(renderer_ctx_t *rctx, render_vector *list);
 #endif
-
