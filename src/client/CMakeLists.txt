@@ -8,7 +8,7 @@ file(GLOB app_src "${CMAKE_CURRENT_SOURCE_DIR}/*.c")
 add_executable(${PROJECT_NAME} ${app_src})
 
 target_include_directories(
-    ${PROJECT_NAME} PRIVATE 
+    ${PROJECT_NAME} PRIVATE
     ${CMAKE_BINARY_DIR}/external/raylib/raylib/include
     ${CMAKE_BINARY_DIR}/common
 )
