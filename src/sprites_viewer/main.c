@@ -3,73 +3,83 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "../client/resource.h"
 #include "raylib.h"
+#include "renderer.h"
+#include "sprite_data.h"
 
 const int screenWidth = 800;
 const int screenHeight = 600;
 
-void print_res_with_id(resource_texture_t *ctx, Camera2D *cam) {
-    uint32_t x = 0;
-    uint32_t y = 0;
+typedef enum {
+    INPUT_MOV,
+    INPUT_CHAR,
+} INPUT_MODE_t;
 
-    BeginDrawing();
-    ClearBackground(WHITE);
+INPUT_MODE_t mode;
 
-    BeginMode2D(*cam);
+renderer_ctx_t rctx;
 
-    for (uint32_t i = 0; i < ctx->size; i++) {
-        DrawTexture(ctx->text[i], x*32*ctx->scale, y*32*ctx->scale, WHITE);
+Camera2D camera = {
+    .offset = (Vector2){0.0f, 0.0f},
+    .target = (Vector2){0.0f, 0.0f},
+    .rotation = 0.0f,
+    .zoom = 1.0f,
+};
 
-        if ((x % 32 == 0) && (x != 0)) {
-            y++;
-            x = -1;
-        }
-        x++;
+void input() {
+    if (mode == INPUT_MOV) {
+        if (IsKeyDown(KEY_SLASH)) mode = INPUT_CHAR;
+        if (IsKeyDown(KEY_RIGHT)) camera.target.x += 8;
+        if (IsKeyDown(KEY_LEFT)) camera.target.x -= 8;
+        if (IsKeyDown(KEY_UP)) camera.target.y -= 8;
+        if (IsKeyDown(KEY_DOWN)) camera.target.y += 8;
+        if (IsKeyDown(KEY_Z)) camera.zoom += 0.01f;
+        if (IsKeyDown(KEY_X)) camera.zoom -= 0.01f;
+    }
+    else {
+        if (IsKeyDown(KEY_ESCAPE)) mode = INPUT_MOV;
     }
 
-    x = 0;
-    y = 0;
-    char tmp[RES_SPRITE_PER_IMG];
-    for (uint32_t i = 0; i < ctx->size; i++) {
-        sprintf(tmp, "0x%x", i);
-        DrawText(tmp, x * 32*ctx->scale, y * 32*ctx->scale, 6*ctx->scale, RED);
-        if (x % 32 == 0 && x != 0) {
-            y++;
-            x = -1;
-        }
-        x++;
-    }
+}
 
-    EndMode2D();
-    EndDrawing();
+void crate_draw_buffer() {
+    float x = 0, y = 0;
+    for (uint32_t text_id = 0; text_id < rctx.text_buffer_size; text_id++) {
+        DrawTexture(
+            rctx.text_buffer[text_id],
+            rctx.sprite_width*x++,
+            rctx.sprite_height*y,
+            WHITE);
+
+        if (rctx.sprite_height*x >= screenWidth) {x = 0; y++;}
+    }
 }
 
 int main(void) {
     InitWindow(screenWidth, screenHeight, "Sprite Viewer");
     SetTargetFPS(60);
-    
-    resource_texture_t text_ctx = {0};
-    resource_load_vram(&text_ctx, "./resources/Sprites-%d.png", 30, 2);
+    SetExitKey(0);
 
-    Camera2D camera = {
-        .offset = (Vector2){0.0f, 0.0f},
-        .target = (Vector2){0.0f, 0.0f},
-        .rotation = 0.0f,
-        .zoom = 1.0f,
-    };
+    renderer_init(&rctx, &game_sprite_load_ctx, 1.5);
 
     while (!WindowShouldClose()) {
-        if (IsKeyDown(KEY_RIGHT)) camera.target.x += 8;
-        if (IsKeyDown(KEY_LEFT)) camera.target.x -= 8;
-        if (IsKeyDown(KEY_UP)) camera.target.y -= 8;
-        if (IsKeyDown(KEY_DOWN)) camera.target.y += 8;
+        input();
 
-        if (IsKeyDown(KEY_Z)) camera.zoom += 0.01f;
-        if (IsKeyDown(KEY_X)) camera.zoom -= 0.01f;
+        BeginDrawing();
+        ClearBackground(SKYBLUE);
 
-        print_res_with_id(&text_ctx, &camera);
+        BeginMode2D(camera);                          // Begin 2D mode with custom camera (2D)
+
+        crate_draw_buffer();
+        EndMode2D();                                       // Ends 2D mode with custom camera
+
+        DrawRectangle(0, screenHeight - 20, screenWidth, 20, BLUE);
+        (mode == INPUT_MOV) ?
+            DrawText("MOVE", 0, screenHeight - 20, 16, RED) :
+            DrawText("INPUT_CHAR", 0, screenHeight - 20, 16, RED);
+        EndDrawing();
     }
+
     CloseWindow();
     return 0;
 }

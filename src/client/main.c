@@ -31,7 +31,20 @@ int main(void) {
     int animatein_start = (12*12)*3 - 11;
     int animation_count = animatein_start;
     float last_time = 0.0f;
-    float interval = 1.0f;
+    float interval = 0.2f;
+
+    int animation_frame[] = {
+        animatein_start,
+        animatein_start + 1,
+        animatein_start,
+        animatein_start + 1,
+        animatein_start,
+        animatein_start + 1,
+        animatein_start + 2,
+        animatein_start + 3,
+    };
+
+    uint32_t i = 0;
     while (WindowShouldClose() == false) {
         BeginDrawing();
         ClearBackground(SKYBLUE);
@@ -45,12 +58,10 @@ int main(void) {
         //     if (x == 12 ) { x = 0; y++; }
         // }
 
-        DrawTexture(rctx.text_buffer[animation_count], 400, 300, WHITE);
+        DrawTexture(rctx.text_buffer[animation_frame[i % 8]], 400, 300, WHITE);
+
         if (has_time_elapsed(&last_time, interval)) {
-            animation_count++;
-        }
-        if (animation_count == animatein_start + 4) {
-            animation_count = animatein_start;
+            i++;
         }
 
         DrawFPS(screenWidth-124, 0);

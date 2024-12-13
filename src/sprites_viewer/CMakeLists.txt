@@ -1,11 +1,20 @@
-set(LOCAL_NAME "sprite_view");
-file(GLOB ${LOCAL_NAME}_SRC "${CMAKE_CURRENT_SOURCE_DIR}/*.c")
+cmake_minimum_required(VERSION 3.22)
 
-add_executable(${LOCAL_NAME}.elf %{LOCAL_NAME}_SRC)
+project(sprite_view)
 
-target_include_directories(${LOCAL_NAME}.elf PRIVATE ${CMAKE_BINARY_DIR}/external/raylib/raylib/include)
+file(GLOB SPRITE_SRC
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
+)
 
-target_link_libraries(${LOCAL_NAME}.elf ${CMAKE_BINARY_DIR}/external/raylib/raylib/libraylib.a m)
+add_executable(${PROJECT_NAME} ${SPRITE_SRC})
+
+target_include_directories(
+    ${PROJECT_NAME} PRIVATE
+    ${CMAKE_BINARY_DIR}/external/raylib/raylib/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../client
+)
+
+target_link_libraries(${PROJECT_NAME} ${CMAKE_BINARY_DIR}/external/raylib/raylib/libraylib.a m)
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory

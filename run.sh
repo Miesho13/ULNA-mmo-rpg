@@ -9,7 +9,7 @@ fi
 if [[ $arg == "client" ]]; then
     cd ./build/src/client
     ./application_tibia
-elif [[ $arg == "sprites viewer" ]]; then
+elif [[ $arg == "sprites view" ]]; then
     cd ./build/src/sprites_viewer
     ./sprites_viewer
 fi

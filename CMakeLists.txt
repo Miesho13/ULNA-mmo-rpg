@@ -8,5 +8,5 @@ set(CMAKE_C_FLAGS "-Wall -Wextra -Wpedantic -g3")
 
 add_subdirectory(external/raylib)
 add_subdirectory(src/client)
-# add_subdirectory(src/sprites_viewer)
+add_subdirectory(src/sprites_viewer)
 # add_subdirectory(src/test)
