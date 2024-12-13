@@ -55,12 +55,24 @@ static Texture* prv_load_game(renderer_ctx_t *rctx) {
     return text_buffer;
 }
 
-void renderer_init(renderer_ctx_t *rctx, sprite_loader_path_t *sheet_data, uint32_t scale) {
+static void prv_scale_sprite(renderer_ctx_t *rctx, double scale) {
+    rctx->scale = scale;
+    for (uint32_t image_index = 0; image_index < rctx->image_buffer_size; image_index++) {
+        ImageResize(&rctx->image_buffer[image_index], rctx->sprite_width, rctx->sprite_height);                                       // Resize image (Bicubic scaling algorithm)
+    }
+}
 
+void renderer_init(renderer_ctx_t *rctx, sprite_loader_path_t *sheet_data, double scale) {
     Image *tmp_sheet = prv_load_sheet(sheet_data);
 
+    rctx->sprite_height = sheet_data->sprite_height*scale;
+    rctx->sprite_width = sheet_data->sprite_width*scale;
     rctx->image_buffer_size = prv_get_sprite_buffer_size(sheet_data);
     rctx->image_buffer = prv_generate_image_buffer(sheet_data, tmp_sheet, rctx->image_buffer_size);
+
+    if (scale != 1.0f) {
+        prv_scale_sprite(rctx, scale);
+    }
 
     rctx->text_buffer_size = rctx->image_buffer_size;
     rctx->text_buffer = prv_load_game(rctx);

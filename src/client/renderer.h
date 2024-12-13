@@ -40,12 +40,17 @@ typedef struct {
     size_t text_buffer_size;
 
     char *path_to_sprites_sheet;
-    uint32_t scale;
+    double scale;
+
+    // TODO(marcin.ryzewskii@gmail.com): Can we have a problem
+    // with precision in dobule can we?
+    double sprite_width;
+    double sprite_height;
 
 } renderer_ctx_t;
 
 
-void renderer_init(renderer_ctx_t *rctx, sprite_loader_path_t *sprite_data, uint32_t scale);
+void renderer_init(renderer_ctx_t *rctx, sprite_loader_path_t *sprite_data, double scale);
 
 void renderer_load_text(renderer_ctx_t *rctx);
 void renderer_free_text(renderer_ctx_t *rctx);
