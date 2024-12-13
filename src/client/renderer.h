@@ -3,10 +3,9 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+
 #include "raylib.h"
 #include "sprite_data.h"
-
-#include "resource.h"
 #include "sprite_data.h"
 
 typedef struct {
