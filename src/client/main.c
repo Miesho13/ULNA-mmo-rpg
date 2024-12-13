@@ -1,8 +1,9 @@
 #include <assert.h>
+#include <bits/posix1_lim.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include <stdio.h>
+#include <unistd.h>
 
 #include "raylib.h"
 #include "renderer.h"
@@ -11,13 +12,26 @@
 const int screenWidth = 800;
 const int screenHeight = 600;
 
+bool has_time_elapsed(float *lastTime, float interval) {
+    float currentTime = GetTime();
+    if ((currentTime - *lastTime) >= interval) {
+        *lastTime = currentTime;
+        return true;
+    }
+    return false;
+}
+
 int main(void) {
     InitWindow(screenWidth, screenHeight, "tibia game");
     SetTargetFPS(144);
 
     renderer_ctx_t rctx;
-    renderer_init(&rctx, &game_sprite_load_ctx, 1);
+    renderer_init(&rctx, &game_sprite_load_ctx, 1.5);
 
+    int animatein_start = (12*12)*3 - 11;
+    int animation_count = animatein_start;
+    float last_time = 0.0f;
+    float interval = 1.0f;
     while (WindowShouldClose() == false) {
         BeginDrawing();
         ClearBackground(SKYBLUE);
@@ -25,10 +39,18 @@ int main(void) {
         int32_t x = 0;
         int32_t y = 0;
 
-        for (uint32_t i = 0; i < 12*12; i++) {
-            DrawTexture(rctx.text_buffer[i], x*32, y*32, WHITE);
-            x++;
-            if (x == 12 ) { x = 0; y++; }
+        // for (uint32_t i = 0; i < 12*12; i++) {
+        //     DrawTexture(rctx.text_buffer[i], x*32, y*32, WHITE);
+        //     x++;
+        //     if (x == 12 ) { x = 0; y++; }
+        // }
+
+        DrawTexture(rctx.text_buffer[animation_count], 400, 300, WHITE);
+        if (has_time_elapsed(&last_time, interval)) {
+            animation_count++;
+        }
+        if (animation_count == animatein_start + 4) {
+            animation_count = animatein_start;
         }
 
         DrawFPS(screenWidth-124, 0);
