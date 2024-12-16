@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "raylib.h"
 #include "renderer.h"
@@ -26,7 +27,14 @@ Camera2D camera = {
     .zoom = 1.0f,
 };
 
-void input() {
+struct _search_buffer {
+    uint8_t buffer[1024];
+    uint32_t len;
+} search_buffer = {0};
+int form = 0;
+int to = 0;
+
+void input(void) {
     if (mode == INPUT_MOV) {
         if (IsKeyDown(KEY_SLASH)) mode = INPUT_CHAR;
         if (IsKeyDown(KEY_RIGHT)) camera.target.x += 8;
@@ -37,9 +45,13 @@ void input() {
         if (IsKeyDown(KEY_X)) camera.zoom -= 0.01f;
     }
     else {
-        if (IsKeyDown(KEY_ESCAPE)) mode = INPUT_MOV;
-    }
+        search_buffer.buffer[search_buffer.len] = (uint8_t)GetCharPressed();
 
+        if (IsKeyDown(KEY_ESCAPE)) mode = INPUT_MOV;
+        if (IsKeyDown(KEY_ESCAPE)) {
+
+        }
+    }
 }
 
 void crate_draw_buffer() {
