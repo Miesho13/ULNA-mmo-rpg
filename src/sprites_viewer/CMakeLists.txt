@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(sprite_view)
+project(sprites_viewer)
 
 file(GLOB SPRITE_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
