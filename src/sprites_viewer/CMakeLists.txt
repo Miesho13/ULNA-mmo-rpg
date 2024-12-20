@@ -6,7 +6,7 @@ file(GLOB SPRITE_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
 )
 
-add_executable(${PROJECT_NAME} ${SPRITE_SRC})
+add_executable(${PROJECT_NAME} ${SPRITE_SRC} ../client/renderer.c ../client/sprite_data.c)
 
 target_include_directories(
     ${PROJECT_NAME} PRIVATE
