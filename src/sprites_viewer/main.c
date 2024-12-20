@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <math.h>
 #include <string.h>
 
 #include "raylib.h"
@@ -37,12 +38,20 @@ int to = 0;
 void input(void) {
     if (mode == INPUT_MOV) {
         if (IsKeyDown(KEY_SLASH)) mode = INPUT_CHAR;
-        if (IsKeyDown(KEY_RIGHT)) camera.target.x += 8;
-        if (IsKeyDown(KEY_LEFT)) camera.target.x -= 8;
-        if (IsKeyDown(KEY_UP)) camera.target.y -= 8;
-        if (IsKeyDown(KEY_DOWN)) camera.target.y += 8;
-        if (IsKeyDown(KEY_Z)) camera.zoom += 0.01f;
-        if (IsKeyDown(KEY_X)) camera.zoom -= 0.01f;
+        //if (IsKeyDown(KEY_RIGHT)) camera.target.x += rctx.sprite_height;
+        // if (IsKeyDown(KEY_LEFT)) camera.target.x -= 8;
+        if (IsKeyPressed(KEY_UP)) {
+            if (camera.target.y > 0) {
+                camera.target.y -= rctx.sprite_height;
+            }
+        }
+        if (IsKeyPressed(KEY_DOWN)) {
+            if (camera.target.y <  6*1024) {
+                camera.target.y += rctx.sprite_height;
+            }
+        }
+        // if (IsKeyDown(KEY_Z)) camera.zoom += 0.01f;
+        // if (IsKeyDown(KEY_X)) camera.zoom -= 0.01f;
     }
     else {
         search_buffer.buffer[search_buffer.len] = (uint8_t)GetCharPressed();
@@ -67,6 +76,19 @@ void crate_draw_buffer() {
     }
 }
 
+void draw_cursors_pos(renderer_ctx_t *ctx) {
+    Vector2 pos = GetMousePosition();
+    
+    pos.x = floor(pos.x / (ctx->sprite_width));
+    pos.y = floor(pos.y / (ctx->sprite_height));
+    
+    double index = (16*pos.y) + pos.x;
+
+    uint8_t buffer[64] = {0};
+    sprintf((char*)buffer, "%.1f", index);
+    DrawText((char*)buffer, screenWidth - 120, screenHeight - 20, 18, WHITE);
+}
+
 int main(void) {
     InitWindow(screenWidth, screenHeight, "Sprite Viewer");
     SetTargetFPS(60);
@@ -79,16 +101,15 @@ int main(void) {
 
         BeginDrawing();
         ClearBackground(SKYBLUE);
-
-        BeginMode2D(camera);                          // Begin 2D mode with custom camera (2D)
-
+        BeginMode2D(camera);
         crate_draw_buffer();
-        EndMode2D();                                       // Ends 2D mode with custom camera
+        EndMode2D();                                       
 
         DrawRectangle(0, screenHeight - 20, screenWidth, 20, BLUE);
         (mode == INPUT_MOV) ?
-            DrawText("MOVE", 0, screenHeight - 20, 16, RED) :
-            DrawText("INPUT_CHAR", 0, screenHeight - 20, 16, RED);
+            DrawText("MOVE", 0, screenHeight - 20, 16, WHITE) :
+            DrawText("INPUT_CHAR", 0, screenHeight - 20, 16, WHITE);
+        draw_cursors_pos(&rctx);
         EndDrawing();
     }
 
