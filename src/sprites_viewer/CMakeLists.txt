@@ -6,12 +6,16 @@ file(GLOB SPRITE_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
 )
 
-add_executable(${PROJECT_NAME} ${SPRITE_SRC} ../client/renderer.c ../client/sprite_data.c)
+add_executable(${PROJECT_NAME} ${SPRITE_SRC} 
+                               ../client/renderer.c 
+                               ../client/sprite_data.c
+                               ../common/dynamic_array.c)
 
 target_include_directories(
     ${PROJECT_NAME} PRIVATE
     ${CMAKE_BINARY_DIR}/external/raylib/raylib/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../client
+    ${CMAKE_CURRENT_SOURCE_DIR}/../common
 )
 
 target_link_libraries(${PROJECT_NAME} ${CMAKE_BINARY_DIR}/external/raylib/raylib/libraylib.a m)
