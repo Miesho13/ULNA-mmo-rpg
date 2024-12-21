@@ -3,3 +3,4 @@ build
 src/raylib_inc/*.h
 resources
 .cache
+random_example
