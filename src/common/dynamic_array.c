@@ -1,11 +1,14 @@
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 #include "dynamic_array.h"
 
-#define _vec_get_size(vec) ((_vec_header*)vec)[-1].size
-#define _vec_get_capasity(vec) ((_vec_header*)vec)[-1].capasity
+#define _vec_get_size(vec)          ((_vec_header*)vec)[-1].size
+#define _vec_get_capasity(vec)      ((_vec_header*)vec)[-1].capasity
+#define _vec_get_element_size(vec)  ((_vec_header*)vec)[-1].element_size
 
 typedef struct {
+    uint32_t element_size;
     uint32_t size; 
     uint32_t capasity;
     uint8_t data[];
@@ -19,6 +22,7 @@ static inline _vec_header* _vec_new(uint32_t capasity) {
 vec_array vec_array_new(uint32_t capasity, uint32_t element_size) {
     _vec_header *header = _vec_new(capasity*element_size);
     header->capasity = capasity;
+    header->element_size = element_size;
     return (void*)header->data;
 }
 
@@ -33,6 +37,29 @@ uint32_t vec_capasity(const vec_array vec) {
     const _vec_header *header = vec;
     return header[-1].capasity;
 }
+
+void vec_push(vec_array vec, void *val) {
+    assert(vec && "NULL reference in vector");
+    if (_vec_get_capasity(vec) < _vec_get_size(vec)) {
+        // !TODO(marcin.ryzewskii@gmail.com): Implementation of memory resize.
+        return;
+    }
+    uint8_t *head = vec;
+    head += (_vec_get_size(vec)*_vec_get_element_size(vec));
+    memcpy(head, val, _vec_get_element_size(vec));
+    _vec_get_size(vec)++;
+}
+
+void* vec_get(vec_array vec, uint32_t index) {
+    assert(vec && "NULL reference in vector");
+    assert(_vec_get_capasity(vec) > index && "The index is out of range.");
+    assert(_vec_get_size(vec) > index && "The element dosen't exist.");
+    uint8_t *head = vec;
+    head += (index*_vec_get_element_size(vec));
+    return (void*)head;
+}
+
+
 
 void vec_push_back_int(vec_array vec, int val) {
     assert(vec && "NULL reference in vector");
@@ -56,7 +83,7 @@ int vec_get_int(const vec_array vec, uint32_t index) {
     assert(vec && "NULL reference in vector.");
     uint32_t size = _vec_get_size(vec);
     uint32_t capasity = _vec_get_capasity(vec);
-    assert(capasity > index && "Index aout of range.");
+    assert(capasity > index && "The index aout of range.");
     assert(size > index && "Element dosen't exist.");
     return ((int*)vec)[index];
 }
