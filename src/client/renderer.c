@@ -57,12 +57,12 @@ static Texture* prv_load_game(renderer_ctx_t *rctx) {
 
 static void prv_scale_sprite(renderer_ctx_t *rctx, double scale) {
     rctx->scale = scale;
-    for (uint32_t image_index = 0; image_index < rctx->image_buffer_size; image_index++) {
-        ImageResize(&rctx->image_buffer[image_index], rctx->sprite_width, rctx->sprite_height);                                       // Resize image (Bicubic scaling algorithm)
+    for (uint32_t image_index = 0; image_index < rctx->image_buffer_size; image_index++) { 
+        ImageResize(&rctx->image_buffer[image_index], rctx->sprite_width, rctx->sprite_height);
     }
 }
 
-void renderer_init(renderer_ctx_t *rctx, sprite_loader_path_t *sheet_data, double scale) {
+void rend_init(renderer_ctx_t *rctx, sprite_loader_path_t *sheet_data, double scale) {
     Image *tmp_sheet = prv_load_sheet(sheet_data);
 
     rctx->sprite_height = sheet_data->sprite_height*scale;
@@ -81,4 +81,14 @@ void renderer_init(renderer_ctx_t *rctx, sprite_loader_path_t *sheet_data, doubl
         UnloadImage(tmp_sheet[image_index]);
     }
     free(tmp_sheet);
+}
+
+void rend_draw_vector(const renderer_ctx_t *rctx, const vec_array objects_v) {
+    for (uint32_t render = 0; render < vec_size(objects_v); render++) {
+        render_obj *obj = vec_get(objects_v, render);
+        DrawTexture(
+            rctx->text_buffer[obj->id], 
+            obj->pos.x, obj->pos.y, WHITE
+        );
+    }
 }
