@@ -94,7 +94,7 @@ int main(void) {
     SetTargetFPS(60);
     SetExitKey(0);
 
-    renderer_init(&rctx, &game_sprite_load_ctx, 1.5);
+    rend_init(&rctx, &game_sprite_load_ctx, 1.5);
 
     while (!WindowShouldClose()) {
         input();
