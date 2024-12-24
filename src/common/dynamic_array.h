@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 typedef void* vec_array;
+typedef void* vec_int_c;
 
 // General operation
 vec_array vec_array_new(uint32_t capasity, uint32_t element_size);
