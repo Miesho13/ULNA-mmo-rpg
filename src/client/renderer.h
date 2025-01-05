@@ -33,12 +33,7 @@ typedef struct {
 
 } renderer_ctx_t;
 
-void renderer_init(
-    renderer_ctx_t *rctx, 
-    sprite_loader_path_t *sprite_data, 
-    double scale
-);
-
 void rend_init(renderer_ctx_t *rctx, sprite_loader_path_t *sheet_data, double scale);
 void rend_draw_vector(const renderer_ctx_t *rctx, const vec_array objects_v);
+
 #endif
