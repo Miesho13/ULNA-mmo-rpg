@@ -57,16 +57,16 @@ static Texture* prv_load_game(renderer_ctx_t *rctx) {
 
 static void prv_scale_sprite(renderer_ctx_t *rctx, double scale) {
     rctx->scale = scale;
-    for (uint32_t image_index = 0; image_index < rctx->image_buffer_size; image_index++) { 
-        ImageResize(&rctx->image_buffer[image_index], rctx->sprite_width, rctx->sprite_height);
+    for (uint32_t image_index = 0; image_index < rctx->image_buffer_size; image_index++) {
+        ImageResize(&rctx->image_buffer[image_index], rctx->scale_sprite_width, rctx->scale_sprite_height);
     }
 }
 
 void rend_init(renderer_ctx_t *rctx, sprite_loader_path_t *sheet_data, double scale) {
     Image *tmp_sheet = prv_load_sheet(sheet_data);
 
-    rctx->sprite_height = sheet_data->sprite_height*scale;
-    rctx->sprite_width = sheet_data->sprite_width*scale;
+    rctx->scale_sprite_height = sheet_data->sprite_height*scale;
+    rctx->scale_sprite_width = sheet_data->sprite_width*scale;
     rctx->image_buffer_size = prv_get_sprite_buffer_size(sheet_data);
     rctx->image_buffer = prv_generate_image_buffer(sheet_data, tmp_sheet, rctx->image_buffer_size);
 
@@ -87,7 +87,7 @@ void rend_draw_vector(const renderer_ctx_t *rctx, const vec_array objects_v) {
     for (uint32_t render = 0; render < vec_size(objects_v); render++) {
         render_obj *obj = vec_get(objects_v, render);
         DrawTexture(
-            rctx->text_buffer[obj->id], 
+            rctx->text_buffer[obj->id],
             obj->pos.x, obj->pos.y, WHITE
         );
     }

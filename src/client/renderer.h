@@ -28,8 +28,8 @@ typedef struct {
 
     // TODO(marcin.ryzewskii@gmail.com): Can we have a problem
     // with precision in dobule can we?
-    double sprite_width;
-    double sprite_height;
+    double scale_sprite_width;
+    double scale_sprite_height;
 
 } renderer_ctx_t;
 

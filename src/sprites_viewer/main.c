@@ -42,12 +42,12 @@ void input(void) {
         // if (IsKeyDown(KEY_LEFT)) camera.target.x -= 8;
         if (IsKeyPressed(KEY_UP)) {
             if (camera.target.y > 0) {
-                camera.target.y -= rctx.sprite_height;
+                camera.target.y -= rctx.scale_sprite_height;
             }
         }
         if (IsKeyPressed(KEY_DOWN)) {
             if (camera.target.y <  6*1024) {
-                camera.target.y += rctx.sprite_height;
+                camera.target.y += rctx.scale_sprite_height;
             }
         }
         // if (IsKeyDown(KEY_Z)) camera.zoom += 0.01f;
@@ -68,20 +68,20 @@ void crate_draw_buffer() {
     for (uint32_t text_id = 0; text_id < rctx.text_buffer_size; text_id++) {
         DrawTexture(
             rctx.text_buffer[text_id],
-            rctx.sprite_width*x++,
-            rctx.sprite_height*y,
+            rctx.scale_sprite_width*x++,
+            rctx.scale_sprite_height*y,
             WHITE);
 
-        if (rctx.sprite_height*x >= screenWidth) {x = 0; y++;}
+        if (rctx.scale_sprite_height*x >= screenWidth) {x = 0; y++;}
     }
 }
 
 void draw_cursors_pos(renderer_ctx_t *ctx) {
     Vector2 pos = GetMousePosition();
-    
-    pos.x = floor(pos.x / (ctx->sprite_width));
-    pos.y = floor(pos.y / (ctx->sprite_height));
-    
+
+    pos.x = floor(pos.x / (ctx->scale_sprite_width));
+    pos.y = floor(pos.y / (ctx->scale_sprite_height));
+
     double index = (16*pos.y) + pos.x;
 
     uint8_t buffer[64] = {0};
@@ -93,6 +93,7 @@ int main(void) {
     InitWindow(screenWidth, screenHeight, "Sprite Viewer");
     SetTargetFPS(60);
     SetExitKey(0);
+    SetWindowState(FLAG_WINDOW_RESIZABLE);
 
     rend_init(&rctx, &game_sprite_load_ctx, 1.5);
 
@@ -103,7 +104,7 @@ int main(void) {
         ClearBackground(SKYBLUE);
         BeginMode2D(camera);
         crate_draw_buffer();
-        EndMode2D();                                       
+        EndMode2D();
 
         DrawRectangle(0, screenHeight - 20, screenWidth, 20, BLUE);
         (mode == INPUT_MOV) ?
