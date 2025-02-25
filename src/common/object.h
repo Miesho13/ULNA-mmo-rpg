@@ -6,17 +6,16 @@
 #include "./event.h"
 
 typedef enum {
-    LAYER = 0x0,
-    NPC,
-    MOB,
+    PLAYER = 0x0,
+    GRAUND, 
 
     OBJECT_TYPE_COUNT
 } object_type_t;
 
 typedef struct {
+    uint32_t id;
     object_type_t object_type;
-    vector2_int_t game_pos;
-
+    event_t event[EVENT_COUNT];
 } interface_object;
 #define _INTEFACE_OBJECT_SIZE (sizeof(interface_object))
 
