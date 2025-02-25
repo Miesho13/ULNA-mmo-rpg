@@ -8,16 +8,18 @@
 #define __EVENT__
 
 #include <stdint.h>
+#include <stdbool.h>
+
 typedef enum {
-    EMPTY = 0,
-    
+    HELLO = 0,
+
     EVENT_COUNT
 } EVENT_ID;
 
 typedef void (*event_call)(void*);
 typedef struct {
-    uint32_t id;
+    bool is_define;
     event_call call;
-} event;
+} event_t;
 
 #endif
