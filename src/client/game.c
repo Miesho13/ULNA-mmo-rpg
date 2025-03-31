@@ -3,6 +3,7 @@
 #include "game_config.h"
 #include "dynamic_array.h"
 
+#include <stdio.h>
 
 
 static void draw_backgraund(game_context_t *game_ctx) {
@@ -39,8 +40,9 @@ static void draw_obj(game_context_t *game_ctx) {
 
 void game_frame(game_context_t *game_ctx) {
     // Logic of the clinet
-    move_logic(game_ctx);
+    printf("Start grame frame");
 
+    move_logic(game_ctx);
     // Draw the result for user
     BeginDrawing();
 
