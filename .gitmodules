@@ -1,3 +1,6 @@
 [submodule "external/raylib"]
 	path = external/raylib
 	url = https://github.com/raysan5/raylib.git
+[submodule "external/cnet"]
+	path = external/cnet
+	url = git@github.com:Miesho13/cnet.git
