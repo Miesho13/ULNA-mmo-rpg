@@ -1,55 +1,45 @@
-#include "game.h"
-#include "renderer.h"
-#include "game_config.h"
-#include "dynamic_array.h"
+#include "./game.h"
+#include "./platform.h"
+#include "client.h"
 
-#include <stdio.h>
+#define WIDTH 800
+#define HEIGHT 600
 
+static const char *sprite_sheets_path[] = {
+    "/home/miesho/programming/c/tibia_like_game_engine/resources/7.0/Sprites-0.png",
+    "/home/miesho/programming/c/tibia_like_game_engine/resources/7.0/Sprites-1.png",
+};
 
-static void draw_backgraund(game_context_t *game_ctx) {
-    vec_render_obj backgraund
-        = vec_array_new(TILE_GAME_SIZE, sizeof(render_obj));
+typedef struct _game_context {
+    int window_width;
+    int window_height;
+} game_context;
 
-    int sizie_file = 0;
-    uint8_t *buffer = LoadFileData("./map/output", &sizie_file);
+static game_context game_ctx;
 
-    int x_pos = 0; int y_pos = 0;
-    uint32_t scale = game_ctx->game_renderer.scale_sprite_width;
-    for (int i = 0; i < TILE_GAME_SIZE; i++) {
-        vec_push(
-            backgraund,
-            &(render_obj) {
-            (Vector2){x_pos*scale, y_pos*scale},
-            buffer[i]
-        });
-        x_pos++;
-        if (x_pos == 15) { y_pos++; x_pos = 0; }
+void game_init(void) {
+    game_ctx.window_height = HEIGHT;
+    game_ctx.window_height = WIDTH;
+
+    platform_load_sprite_sheets(sprite_sheets_path, 2);
+}
+
+void render_frame(uint8_t* plain);
+
+void game_run(void) {
+    client_init();
+    uint8_t msg[] = "CLIENT HELLO\r\n";
+    client_send(msg, sizeof(msg));
+
+    platform_init_window(WIDTH, HEIGHT, "tibia", 144);
+
+    while (!platform_window_shoud_close()) {
+        platform_draw_epilog();
+
+        platform_clear_background(0x181818FF);
+        platform_draw_ractangle(100, 100, 200, 200, 0xFF0000FF);
+
+        platform_draw_prolog();
     }
-    free(buffer);
-
-    rend_draw_vector(&game_ctx->game_renderer, backgraund);
 }
 
-static void move_logic(game_context_t *game_ctx) {
-
-}
-
-static void draw_obj(game_context_t *game_ctx) {
-
-}
-
-void game_frame(game_context_t *game_ctx) {
-    // Logic of the clinet
-    printf("Start grame frame");
-
-    move_logic(game_ctx);
-    // Draw the result for user
-    BeginDrawing();
-
-    ClearBackground(BLACK);
-
-    draw_backgraund(game_ctx);
-    draw_obj(game_ctx);
-
-    EndDrawing();
-}
