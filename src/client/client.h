@@ -10,6 +10,7 @@ typedef struct {
 
 int client_init(void);
 int client_send(uint8_t *msg, size_t len);
+int client_recv(uint8_t *msg, size_t len);
 void client_service(client_context *ctx);
 
 

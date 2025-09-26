@@ -66,6 +66,10 @@ int client_send(uint8_t *msg, size_t len) {
     return (int)send(prv_client_context.fd, msg, len, 0);
 }
 
+int client_recv(uint8_t *msg, size_t len) {
+    return (int)recv(prv_client_context.fd, msg, len, 0);
+}
+
 #elif defined(_WIN32)
 #   errors "The Windows port has not been crated yet"
 #endif
