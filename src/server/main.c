@@ -3,5 +3,5 @@
 #include "server.h"
 
 int main() {
-    server_run();
+    return server_run();
 }
