@@ -54,4 +54,8 @@ void platform_draw_ractangle(int posX, int posY, int width, int height, uint32_t
     DrawRectangle(posX, posY, width, height, cl);
 }
 
+bool platform_key_press(keyboard_key key) {
+    return IsKeyPressed(key);
+}
+
 
