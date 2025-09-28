@@ -18,12 +18,12 @@ typedef struct _game_context {
     int window_width;
     int window_height;
 
-    uint32_t id;
+    uint16_t id;
     struct {
         int x;
         int y;
     } pos;
-    uint8_t players[11*11];
+    uint16_t players[11*11];
 
 } game_context;
 
@@ -60,18 +60,19 @@ void chang_pos(int id, int dx, int dy) {
     };
     client_send((uint8_t*)&request, sizeof(request));
 
-    uint8_t respone[124] = {0};
+    uint8_t respone[1024*5] = {0};
     client_recv(respone, sizeof(respone));
 
-    memcpy(game_ctx.players, ((event_respone_t*)respone)->players, sizeof(game_ctx.players));
+    // TODO(marcin.ryzewski): we can remove this extra copy. Symple just have static buffer 
+    // for recv update client
+    memcpy(game_ctx.players, ((update_respone*)respone)->player_map, sizeof(game_ctx.players));
 
-    LOG(INFO, "new pos: x:%d y:%d", 
-            ((event_respone_t*)respone)->pos.x,
-            ((event_respone_t*)respone)->pos.y);
-
+    // LOG(LOG_INFO, "new pos: x:%d y:%d", 
+    //        ((event_respone_t*)respone)->pos.x,
+    //        ((event_respone_t*)respone)->pos.y);
 }
 
-void good_bye() {
+void good_bye(void) {
     good_bye_request_t request = {
         .head = GOOD_BYE,
         .id = game_ctx.id,
@@ -125,15 +126,17 @@ void game_run(void) {
 
         int x = 0; int y = 0;
         for (int player = 0; player < 11*11; player++) {
-            if (game_ctx.players[player] == 1) {
+            if (game_ctx.players[player] != game_ctx.id && game_ctx.players[player] != 0) {
                 platform_draw_ractangle(x*TILE_W, y*TILE_H, TILE_W, TILE_H, 0xFF0000FF);
             }
-            else if (game_ctx.players[player] == 2) {
+            else if (game_ctx.players[player] == game_ctx.id) {
                 platform_draw_ractangle(x*TILE_W, y*TILE_H, TILE_W, TILE_H, 0x00FF00FF);
             }
 
             x++;
+            printf("%d ", game_ctx.players[player]);
             if (x % 11 == 0 && x != 0) {
+                printf("\n");
                 y++;
                 x = 0;
             }
