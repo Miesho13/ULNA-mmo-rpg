@@ -1,7 +1,5 @@
-#include <stdio.h>
-#include "common.h"
-#include "server.h"
+#include "core.h"
 
-int main() {
-    return server_run();
+int main(void) {
+    return core_run();
 }
