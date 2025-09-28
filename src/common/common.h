@@ -8,8 +8,8 @@
 
 
 // ---------- LOGS ----------------
-#define INFO  "[INFO]" 
-#define ERROR "[ERROR]" 
+#define LOG_INFO  "[INFO]" 
+#define LOG_ERROR "[ERROR]" 
 
 #define LOG(LEVEL, msg, ...) printf(LEVEL" "msg"\n", ##__VA_ARGS__)
 
