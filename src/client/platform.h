@@ -127,5 +127,6 @@ void platform_load_sprite_sheets(const char **sprite_sheets_path, size_t image_c
 bool platform_window_shoud_close(void);
 void platform_draw_ractangle(int posX, int posY, int width, int height, uint32_t color);
 bool platform_key_press(keyboard_key key);
+void platform_draw_text(const char *text, int posX, int posY, int fontSize, uint32_t color);
 
 #endif // CLIENT_PLATFORM_H 

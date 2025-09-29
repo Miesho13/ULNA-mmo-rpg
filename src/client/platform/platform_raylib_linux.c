@@ -58,4 +58,14 @@ bool platform_key_press(keyboard_key key) {
     return IsKeyPressed(key);
 }
 
+void platform_draw_text(const char *text, int posX, int posY, int fontSize, uint32_t color) {
+    Color cl = {
+        .r = (color & 0xFF000000) >> 8*3,
+        .g = (color & 0x00FF0000) >> 8*2,
+        .b = (color & 0x0000FF00) >> 8*1,
+        .a = (color & 0x000000FF) >> 8*0
+    };
+    DrawText(text, posX, posY, fontSize, cl);
+}
+
 
