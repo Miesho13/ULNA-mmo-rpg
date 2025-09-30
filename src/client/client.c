@@ -1,5 +1,7 @@
 #include "client.h"
 #include "../common/common.h"
+#include "server_client_io.h"
+#include <string.h>
 
 #include <stdio.h>
 
@@ -20,6 +22,68 @@ static client_context prv_client_context;
 client_context* get_client(void) {
     return &prv_client_context;
 }
+
+int hello_to_server(void) {
+    client_init();
+
+    register_request_t hello_msg = {
+        .head = HELLO,
+    };
+
+    client_send((uint8_t*)&hello_msg, sizeof(hello_msg));
+
+    register_respone_t register_respone = {0};
+    client_recv((uint8_t*)&register_respone, sizeof(register_respone));
+
+    if (register_respone.head != HELLO_OK) {
+        return -1;
+    }
+
+    return register_respone.id;
+}
+
+void good_bye(uint16_t id) {
+    good_bye_request_t request = {
+        .head = GOOD_BYE,
+        .id = id,
+    };
+    client_send((uint8_t *)&request, sizeof(request));
+}
+
+void send_chang_pos(int id, int dx, int dy, uint16_t players[PLAYER_MAP_SIZE]) {
+    event_request_t request = {
+        .head = MOVE, 
+        .id = id, 
+        .dpos = {
+            .dx = dx, 
+            .dy = dy
+        }
+    };
+
+    client_send((uint8_t *)&request, sizeof(request));
+
+    update_respone_t respone = {0};
+    client_recv((uint8_t*)&respone, sizeof(respone));
+
+    // TODO(marcin.ryzewski): we can remove this extra copy. Symple just have
+    // static buffer for recv update client
+    memcpy(players, respone.player_map, sizeof(uint16_t)*PLAYER_MAP_SIZE);
+}
+
+int client_push_event(event_request_t *event_request) {
+    if (prv_client_context.fd > 0) {
+        return client_send((uint8_t*)event_request, sizeof(event_request_t));
+    }
+    return -1;
+}
+
+int client_recv_update_event(update_respone_t *update_respone) {
+    if (prv_client_context.fd > 0) {
+        return client_recv((uint8_t*)update_respone, sizeof(*update_respone));
+    }
+    return -1;
+}
+
 
 static void prv_client_hendhake(void) {
 
@@ -60,6 +124,10 @@ ret_err:
         prv_client_context.fd = -1;
     }
     return -1;    
+}
+
+int clinet_service() {
+
 }
 
 int client_send(uint8_t *msg, size_t len) {

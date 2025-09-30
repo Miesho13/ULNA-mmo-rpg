@@ -8,140 +8,126 @@
 
 #define WIDTH 800
 #define HEIGHT 800
+#define PLAYERS_BUFFER_SIZE (11*11)
 
 static const char *sprite_sheets_path[] = {
-    "/home/miesho/programming/c/tibia_like_game_engine/resources/7.0/Sprites-0.png",
-    "/home/miesho/programming/c/tibia_like_game_engine/resources/7.0/Sprites-1.png",
+    "/home/miesho/programming/c/tibia_like_game_engine/resources/7.0/"
+    "Sprites-0.png",
+    "/home/miesho/programming/c/tibia_like_game_engine/resources/7.0/"
+    "Sprites-1.png",
 };
+
+static enum {
+    CLIENT_MAIN_SCENE = 0,
+    CLIENT_LOGING_SCENE
+
+} SCENE = CLIENT_MAIN_SCENE;
 
 typedef struct _game_context {
     int window_width;
     int window_height;
-
     uint16_t id;
     struct {
         int x;
         int y;
     } pos;
-    uint16_t players[11*11];
-
+    // array for visable players on screan
+    uint16_t players[PLAYERS_BUFFER_SIZE];
+    bool game_close;
 } game_context;
 
-static game_context game_ctx;
+static game_context CORE;
 
 void game_init(void) {
-    game_ctx.window_height = HEIGHT;
-    game_ctx.window_height = WIDTH;
+    CORE.game_close = false;
+    CORE.window_height = HEIGHT;
+    CORE.window_height = WIDTH;
+    CORE.id = hello_to_server();
+    platform_init_window(WIDTH, HEIGHT, "tibia", 144);
 
-    platform_load_sprite_sheets(sprite_sheets_path, 2);
-}
-
-void render_frame(uint8_t* plain);
-
-int hello_to_server() {
-    client_init();
-    uint8_t msg[] = { 0x11 };
-    client_send(msg, sizeof(msg));
-
-    uint8_t request[124];
-    client_recv(request, sizeof(request));
-
-    return ((register_respone_t*)request)->id;
-}
-
-void chang_pos(int id, int dx, int dy) {
-    event_request_t request = {
-        .head = MOVE,
-        .id = id,
-        .dpos = {
-            .dx = dx,
-            .dy = dy 
-        }
-    };
-    client_send((uint8_t*)&request, sizeof(request));
-
-    uint8_t respone[1024*5] = {0};
-    client_recv(respone, sizeof(respone));
-
-    // TODO(marcin.ryzewski): we can remove this extra copy. Symple just have static buffer 
-    // for recv update client
-    memcpy(game_ctx.players, ((update_respone*)respone)->player_map, sizeof(game_ctx.players));
-
-    // LOG(LOG_INFO, "new pos: x:%d y:%d", 
-    //        ((event_respone_t*)respone)->pos.x,
-    //        ((event_respone_t*)respone)->pos.y);
-}
-
-void good_bye(void) {
-    good_bye_request_t request = {
-        .head = GOOD_BYE,
-        .id = game_ctx.id,
-    };
-    client_send((uint8_t*)&request, sizeof(request));
+    // platform_load_sprite_sheets(sprite_sheets_path, 2);
 }
 
 static void event_loop(void) {
-    if (platform_key_press(PLATFORM_KEY_A) || platform_key_press(PLATFORM_KEY_LEFT)) {
-        chang_pos(game_ctx.id, -1, 0);
-    }
-    else if (platform_key_press(PLATFORM_KEY_D) || platform_key_press(PLATFORM_KEY_RIGHT)) {
-        chang_pos(game_ctx.id, 1, 0);
-    }
-    else if (platform_key_press(PLATFORM_KEY_S) || platform_key_press(PLATFORM_KEY_DOWN)) {
-        chang_pos(game_ctx.id, 0, 1);
-    }
-    else if (platform_key_press(PLATFORM_KEY_W) || platform_key_press(PLATFORM_KEY_UP)) {
-        chang_pos(game_ctx.id, 0, -1);
+    if (platform_key_press(PLATFORM_KEY_A) ||
+        platform_key_press(PLATFORM_KEY_LEFT)) {
+        send_chang_pos(CORE.id, -1, 0, CORE.players);
+    } 
+    else if (platform_key_press(PLATFORM_KEY_D) ||
+             platform_key_press(PLATFORM_KEY_RIGHT)) {
+        send_chang_pos(CORE.id, 1, 0, CORE.players);
+    } 
+    else if (platform_key_press(PLATFORM_KEY_S) ||
+             platform_key_press(PLATFORM_KEY_DOWN)) {
+        send_chang_pos(CORE.id, 0, 1, CORE.players);
+    } 
+    else if (platform_key_press(PLATFORM_KEY_W) ||
+             platform_key_press(PLATFORM_KEY_UP)) {
+        send_chang_pos(CORE.id, 0, -1, CORE.players);
     } 
     else {
-        chang_pos(game_ctx.id, 0, 0);
+        send_chang_pos(CORE.id, 0, 0, CORE.players);
     }
 }
 
 #define TILE_H (HEIGHT / 11)
 #define TILE_W (WIDTH  / 11)
 
-void game_run(void) {
-    game_ctx.id = hello_to_server();
-
-    platform_init_window(WIDTH, HEIGHT, "tibia", 144);
-    
-    while (true) {
-        if (platform_window_shoud_close()) {
-            good_bye();
-            break;
-        }
-
-        event_loop();
-
-        platform_draw_epilog();
-        platform_clear_background(0x181818FF);
-
-        // DRAW MAIN PLAYER 
-        // platform_draw_ractangle(WIDTH/2 - 16, HEIGHT/2 - 16, 32, 32, 0xFF0000FF);
-
-        // DRAW OTHER PLAER
-        //
-        
-
-        int x = 0; int y = 0;
-        for (int player = 0; player < 11*11; player++) {
-            if (game_ctx.players[player] != game_ctx.id && game_ctx.players[player] != 0) {
-                platform_draw_ractangle(x*TILE_W, y*TILE_H, TILE_W, TILE_H, 0xFF0000FF);
-            }
-            else if (game_ctx.players[player] == game_ctx.id) {
-                platform_draw_ractangle(x*TILE_W, y*TILE_H, TILE_W, TILE_H, 0x00FF00FF);
-            }
-
-            x++;
-            printf("%d ", game_ctx.players[player]);
-            if (x % 11 == 0 && x != 0) {
-                printf("\n");
-                y++;
-                x = 0;
-            }
-        }
-        platform_draw_prolog();
+static inline void client_server_move_demo(void) {
+    if (platform_window_shoud_close()) {
+        good_bye(CORE.id);
+        CORE.game_close = true;
+        return;
     }
+
+    event_loop();
+
+    platform_draw_epilog();
+    platform_clear_background(0x181818FF);
+
+    int x = 0;
+    int y = 0;
+    for (int player = 0; player < 11 * 11; player++) {
+        if (CORE.players[player] != CORE.id && CORE.players[player] != 0) {
+            platform_draw_ractangle(x * TILE_W, y * TILE_H, TILE_W, TILE_H, 0xFF0000FF);
+            char buffer[24] = {0};
+            sprintf(buffer, "%d", CORE.players[player]);
+            platform_draw_text(buffer, x * TILE_W + 30, y * TILE_H, TILE_W, 0xFFFFFFFF);
+
+        } else if (CORE.players[player] == CORE.id) {
+            platform_draw_ractangle(x * TILE_W, y * TILE_H, TILE_W, TILE_H, 0x00FF00FF);
+            char buffer[24] = {0};
+            sprintf(buffer, "%d", CORE.players[player]);
+            platform_draw_text(buffer, x * TILE_W + 30, y * TILE_H, TILE_W, 0xFFFFFFFF);
+
+        }
+
+        x++;
+        if (x % 11 == 0 && x != 0) {
+            y++;
+            x = 0;
+        }
+    }
+    platform_draw_prolog();
 }
+
+int game_run(void) {
+    game_init();
+
+    while (!CORE.game_close) {
+        switch(SCENE) {
+            case CLIENT_MAIN_SCENE: { 
+                main_scene_step(); 
+                break; 
+            }
+
+            case CLIENT_LOGING_SCENE: {
+                break;
+            }
+        }
+    }
+
+    return 0;
+}
+
 
