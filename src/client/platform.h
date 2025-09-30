@@ -126,7 +126,16 @@ void platform_init_window(int width, int height, const char *title, int target_f
 void platform_load_sprite_sheets(const char **sprite_sheets_path, size_t image_count);                        
 bool platform_window_shoud_close(void);
 void platform_draw_ractangle(int posX, int posY, int width, int height, uint32_t color);
+void platform_draw_text(const char *text, int posX, int posY, int fontSize, uint32_t color);                
+
+// INPUT HANDLE
 bool platform_key_press(keyboard_key key);
-void platform_draw_text(const char *text, int posX, int posY, int fontSize, uint32_t color);
+bool platform_key_down(keyboard_key key);
+bool platform_key_relased(keyboard_key key);
+bool platform_key_up(keyboard_key key);
+bool platform_key_pressed_pepeat(keyboard_key key);
+
+// Time
+
 
 #endif // CLIENT_PLATFORM_H 

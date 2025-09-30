@@ -58,6 +58,23 @@ bool platform_key_press(keyboard_key key) {
     return IsKeyPressed(key);
 }
 
+bool platform_key_down(keyboard_key key) {
+    return IsKeyDown(key);
+}
+
+bool platform_key_relased(keyboard_key key) {
+    return IsKeyReleased(key);
+}
+
+bool platform_key_up(keyboard_key key) {
+    return IsKeyUp(key);
+}
+
+bool platform_key_pressed_pepeat(keyboard_key key) {
+    return IsKeyPressedRepeat(key);
+}
+
+
 void platform_draw_text(const char *text, int posX, int posY, int fontSize, uint32_t color) {
     Color cl = {
         .r = (color & 0xFF000000) >> 8*3,
