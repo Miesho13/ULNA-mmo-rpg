@@ -4,9 +4,9 @@
 #include <stdint.h>
 
 typedef enum  {
-    HELLO = 0x11,
-    MOVE = 0x1,
-    IDLE = 0x11,
+    HELLO  = 0x11,
+    MOVE   = 0x1,
+    IDLE   = 0x11,
     UPDATE = 0x69,
 
     GOOD_BYE = 0xfd,
@@ -32,14 +32,6 @@ typedef struct {
     uint16_t id;
 } good_bye_request_t;
 
-typedef struct {
-    uint8_t head; 
-    uint16_t id;
-    struct {
-        int dx; 
-        int dy; 
-    } dpos;
-} event_request_t;
 
 typedef struct {
     uint8_t head; 
@@ -54,10 +46,22 @@ typedef struct {
 #define EVENT_MAX_SIZE  64
 
 typedef struct {
-    uint16_t who_id;
-    uint16_t to_whom;
     uint8_t action;
-} event;
+    struct {
+        int x;
+        int y;
+    } pos;
+} event_t;
+
+typedef struct {
+    uint8_t head; 
+    uint16_t id;
+    struct {
+        int dx; 
+        int dy; 
+    } dpos;
+    event_t event;
+} event_request_t;
 
 typedef struct {
     uint8_t head; 
@@ -65,10 +69,10 @@ typedef struct {
         int x; 
         int y; 
     } pos;
-    uint16_t player_map[PLAYER_MAP_SIZE]; 
-    uint8_t npc_map[PLAYER_MAP_SIZE]; 
-    event   action[EVENT_MAX_SIZE]; 
-} update_respone;
+    uint16_t  player_map[PLAYER_MAP_SIZE]; 
+    uint8_t   npc_map[PLAYER_MAP_SIZE]; 
+    event_t   events[EVENT_MAX_SIZE]; 
+} update_respone_t;
 
 // HELPER FUNCTION
 

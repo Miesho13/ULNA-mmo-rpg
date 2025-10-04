@@ -84,7 +84,7 @@ void eval_mov(cnet_message_t *msg) {
         CORE.pos[msg_req->id].y += msg_req->dpos.dy;
     }
 
-    update_respone respone = {
+    update_respone_t respone = {
         .head = UPDATE,
         .pos = {
             .x = CORE.pos[msg_req->id].x,
@@ -92,12 +92,21 @@ void eval_mov(cnet_message_t *msg) {
         }
     };
 
-    extract8x8_clamped(msg_req->id, CORE.player_map, 
-                       WORD_MAP_W, WORD_MAP_H, 
-                       CORE.pos[msg_req->id].x, CORE.pos[msg_req->id].y, 
+    extract8x8_clamped(msg_req->id, CORE.player_map,
+                       WORD_MAP_W, WORD_MAP_H,
+                       CORE.pos[msg_req->id].x, CORE.pos[msg_req->id].y,
                        respone.player_map);
+#if 0    
+    for (int i = 0; i < 11*11; i++) {
+        if (i % 11 == 0 && i != 0) {
+            printf("\n");
+        }
+        printf("%d ", respone.player_map[i]);
+    }
+    printf("\n");
+#endif
 
-    server_send(&respone, sizeof(respone), &msg->recv_sock, 
+    server_send(&respone, sizeof(respone), &msg->recv_sock,
                 msg->address_len);
 }
 
@@ -116,10 +125,10 @@ void reg_user(cnet_message_t *msg) {
 
 head_t get_heder(uint8_t *data) {
     switch (data[0]) {
-        case HELLO: { return HELLO; }
-        case MOVE:  { return MOVE; }
+        case HELLO:     { return HELLO; }
+        case MOVE:      { return MOVE; }
+        case UPDATE:    { return UPDATE; }
         case GOOD_BYE:  { return GOOD_BYE; }
-
         default:    { return NONE; }
     }
 }
@@ -138,9 +147,8 @@ void handle_rec(cnet_message_t *msg) {
     if (header == HELLO) {
         reg_user(msg);
     }
-    else if (header == MOVE) {
+    else if (header == UPDATE) {
         eval_mov(msg);
-
     }
     else if (header == GOOD_BYE) {
         eval_good_bye(msg);
