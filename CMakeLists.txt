@@ -21,6 +21,7 @@ set(CLIENT_NAME ulna-client)
 add_executable(${CLIENT_NAME}
     $<TARGET_OBJECTS:client_base>
     $<TARGET_OBJECTS:common>
+    $<TARGET_OBJECTS:game_scen_obj>
 )
 
 target_link_libraries(
