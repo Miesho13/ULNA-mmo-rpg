@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <common.h>
 
 #define SPRITE_SHEETS_MAX_COUNT (255) 
 
@@ -119,6 +120,16 @@ typedef enum {
     PLATFORM_KEY_KP_EQUAL        = 336,      // Key: Keypad =
 } keyboard_key;
 
+typedef enum {
+    PLATFORM_MOUSE_BUTTON_LEFT    = 0,
+    PLATFORM_MOUSE_BUTTON_RIGHT   = 1,
+    PLATFORM_MOUSE_BUTTON_MIDDLE  = 2,
+    PLATFORM_MOUSE_BUTTON_SIDE    = 3,
+    PLATFORM_MOUSE_BUTTON_EXTRA   = 4,
+    PLATFORM_MOUSE_BUTTON_FORWARD = 5,
+    PLATFORM_MOUSE_BUTTON_BACK    = 6,
+} mouse_button_t;
+
 void platform_draw_prolog(void);
 void platform_draw_epilog(void);
 void platform_clear_background(uint32_t color);
@@ -134,6 +145,16 @@ bool platform_key_down(keyboard_key key);
 bool platform_key_relased(keyboard_key key);
 bool platform_key_up(keyboard_key key);
 bool platform_key_pressed_pepeat(keyboard_key key);
+
+// Mause input
+
+bool platform_mouse_button_pressed(int button);
+bool platform_mouse_button_down(int button);
+bool platform_mouse_button_released(int button);
+bool platform_mouse_button_up(int button);
+int platform_get_mause_x(void);
+int platform_get_mause_y(void);
+v2_i32 platform_get_mause(void);
 
 // Time
 

@@ -1,5 +1,6 @@
 #include "../platform.h"
 #include "raylib.h"
+#include "common.h"
 
 #include <stdlib.h>
 #include <stdbool.h>
@@ -85,4 +86,31 @@ void platform_draw_text(const char *text, int posX, int posY, int fontSize, uint
     DrawText(text, posX, posY, fontSize, cl);
 }
 
+bool platform_mouse_button_pressed(int button) {
+    return IsMouseButtonPressed(button);
+}
+
+bool platform_mouse_button_down(int button) {
+    return IsMouseButtonDown(button);
+}
+
+bool platform_mouse_button_released(int button) {
+    return IsMouseButtonReleased(button);
+}
+
+bool platform_mouse_button_up(int button) {
+    return IsMouseButtonUp(button);
+}
+
+int platform_get_mause_x(void) {
+    return GetMouseX();
+}
+
+int platform_get_mause_y(void) {
+    return GetMouseY();
+}
+
+v2_i32 platform_get_mause(void) {
+    return (v2_i32){platform_get_mause_x(), platform_get_mause_x()};
+}
 

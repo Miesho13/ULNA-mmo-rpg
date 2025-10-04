@@ -15,5 +15,16 @@
 
 // ---------- END LOGS ----------------
 
+// ----------- vectore ----------------
+typedef struct {
+    float x;    
+    float y;    
+} v2_f32;
+
+typedef struct {
+    int x;    
+    int y;    
+} v2_i32;
+
 #endif //ULNA_COMMON_H
 
