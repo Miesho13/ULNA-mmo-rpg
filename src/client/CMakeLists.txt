@@ -5,7 +5,6 @@ add_library(client_base OBJECT
     game.c 
     platform.c
     client.c
-    time_bench.c
 )
 
 add_library(game_scen_obj OBJECT 

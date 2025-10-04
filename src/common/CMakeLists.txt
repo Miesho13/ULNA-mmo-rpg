@@ -1,7 +1,7 @@
-
 cmake_minimum_required(VERSION 3.28)
 
 add_library(common OBJECT 
     common.c
+    time_bench.c
 )
 
