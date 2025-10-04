@@ -120,7 +120,7 @@ void reg_user(cnet_message_t *msg) {
     server_send(&req, sizeof(register_respone_t), 
                 &msg->recv_sock, msg->address_len);
 
-    LOG(LOG_INFO, "REGISTER %d %s:%s", CORE.reg_ppl, msg->host, msg->port);
+    LOG(COMMON_LOG_INFO, "REGISTER %d %s:%s", CORE.reg_ppl, msg->host, msg->port);
 }
 
 head_t get_heder(uint8_t *data) {
@@ -154,7 +154,7 @@ void handle_rec(cnet_message_t *msg) {
         eval_good_bye(msg);
     }
     else if (header == NONE){
-        LOG(LOG_INFO, "RANDOM HEADER"); 
+        LOG(COMMON_LOG_INFO, "RANDOM HEADER"); 
     }
 }
 

@@ -4,7 +4,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <common.h>
+
+#include "common.h"
 
 #define SPRITE_SHEETS_MAX_COUNT (255) 
 

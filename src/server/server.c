@@ -135,10 +135,10 @@ int server_init(recv_callback recv) {
 
     int ret = prv_init_udp_server(SERVER_URI, SERVER_PORT);
     if (ret != 0) {
-        LOG(LOG_ERROR, "Server cant be start");
+        LOG(COMMON_LOG_ERROR, "Server cant be start");
         return SERVER_ERR;
     }
-    LOG(LOG_INFO, "Server start %s:%s", SERVER_URI, SERVER_PORT);
+    LOG(COMMON_LOG_INFO, "Server start %s:%s", SERVER_URI, SERVER_PORT);
 
     prv_server_context.is_server_run = true;
     return SERVER_OK;

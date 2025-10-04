@@ -40,7 +40,7 @@ static inline void log_in_to_server(void) {
     CORE.app->client_context.id = hello_to_server();
     if (CORE.app->client_context.id < 0) {
         CORE.app->client_context.login = false; 
-        LOG(LOG_ERROR, "We cannot log in to the game server.");
+        LOG(COMMON_LOG_ERROR, "We cannot log in to the game server.");
     }
     CORE.app->client_context.login = true; 
 }
@@ -121,8 +121,13 @@ static inline void position_change_event(void) {
     }
 }
 
+static inline void mose_input_event() {
+    
+}
+
 static inline void input_event(void) {
     position_change_event();
+    mose_input_event();
 
     if (platform_key_press(PLATFORM_KEY_N)) {
         CORE.bench.debug_dump_info ^= 1;
@@ -159,7 +164,7 @@ static inline void drump_deb_info(bool dumb) {
     platform_draw_text(ms, 0, 0, 20, 0x2bf21dff);
 }
 
-static inline void render_players(void) {
+static inline void render_players_demo(void) {
     int tile_h = CORE.app->window_height / 11;
     int tile_w = CORE.app->window_width  / 11;
 
@@ -193,7 +198,7 @@ static inline void render_plain(void) {
     platform_clear_background(0x153699ff);
 
     // DRAW DEBUG INFO
-    render_players();
+    render_players_demo();
     drump_deb_info(CORE.bench.debug_dump_info);
 
     platform_draw_epilog();
