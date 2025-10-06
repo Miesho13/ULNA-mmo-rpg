@@ -2,8 +2,22 @@
 #define TIME_BENCH
 
 #include <stdint.h>
+#include <stdbool.h>
 
-void time_start(void);
+
+#ifdef __linux__
+#include <time.h>
+
+typedef struct {
+    struct timespec start;
+    uint64_t duration_us;
+} common_timert;
+
+#endif
+
+uint64_t time_now_us(void);
+
+void     time_start(void);
 uint64_t time_end_ns(void);
 
 /* Example usage:
@@ -20,5 +34,9 @@ int main() {
     return 0;
 }
 */
+
+void timer_reset(common_timert *tim, uint64_t val);
+bool     timer_elapsed(common_timert *tim);
+
 
 #endif //TIME_BENCH
