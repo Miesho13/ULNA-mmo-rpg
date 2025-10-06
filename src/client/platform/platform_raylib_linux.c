@@ -111,6 +111,6 @@ int platform_get_mause_y(void) {
 }
 
 v2_i32 platform_get_mause(void) {
-    return (v2_i32){platform_get_mause_x(), platform_get_mause_x()};
+    return (v2_i32){platform_get_mause_x(), platform_get_mause_y()};
 }
 
