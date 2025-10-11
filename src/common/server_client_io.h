@@ -2,6 +2,7 @@
 #define SERVER_CLIENT_IO
 
 #include <stdint.h>
+#include <wayland-client-protocol.h>
 
 typedef enum  {
     HELLO  = 0x11,
@@ -32,7 +33,6 @@ typedef struct {
     uint16_t id;
 } good_bye_request_t;
 
-
 typedef struct {
     uint8_t head; 
     struct {
@@ -61,7 +61,7 @@ typedef struct {
         int dy; 
     } dpos;
     event_t event;
-} event_request_t;
+} update_request_t;
 
 typedef struct {
     uint8_t head; 
@@ -73,6 +73,11 @@ typedef struct {
     uint8_t   npc_map[PLAYER_MAP_SIZE]; 
     event_t   events[EVENT_MAX_SIZE]; 
 } update_respone_t;
+
+typedef enum {
+    EV_NONE = 0x0,
+    EV_CLICK = 0x1,
+} EV_EVENTS;
 
 // HELPER FUNCTION
 
