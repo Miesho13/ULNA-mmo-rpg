@@ -19,6 +19,11 @@ typedef struct {
     } pos;
 
     struct {
+        uint32_t h;
+        uint32_t w;
+    } tail_size;
+
+    struct {
         int dx;
         int dy;
     } dpos;
@@ -45,10 +50,12 @@ static inline void log_in_to_server(void) {
     CORE.app->client_context.login = true; 
 }
 
-static inline void send_callback() {
+static inline void clear_after_send() {
     // HERE SHOUD BE RESET ALL SATE WHAT WE NEED TO SEND ONCE 
     CORE.dpos.dx = 0;
     CORE.dpos.dy = 0;
+
+    memset(&CORE.event, 0, sizeof(CORE.event));
 }
 
 static inline void server_communication(void) {
@@ -58,15 +65,15 @@ static inline void server_communication(void) {
 
     time_start();
     
-    event_request_t event_request = {0};
+    update_request_t update_request = {0};
 
-    event_request.head    = UPDATE;
-    event_request.id      = CORE.app->client_context.id;
-    event_request.dpos.dx = CORE.dpos.dx;
-    event_request.dpos.dy = CORE.dpos.dy;
-    event_request.event   = CORE.event;
+    update_request.head    = UPDATE;
+    update_request.id      = CORE.app->client_context.id;
+    update_request.dpos.dx = CORE.dpos.dx;
+    update_request.dpos.dy = CORE.dpos.dy;
+    update_request.event   = CORE.event;
 
-    client_push_event(&event_request);
+    client_push_event(&update_request);
 
     // TODO: Need to make some lifetime and timestamp for comunication
     //       if some recv dont come we shoud make recive 
@@ -79,7 +86,7 @@ static inline void server_communication(void) {
     memcpy(CORE.player_tile_map, update_respone.player_map, 
            sizeof(uint16_t) * MAIN_SCENE_TILE_BUFF_SIZE);
 
-    send_callback();
+    clear_after_send();
 
     CORE.bench.server_comm_delay = time_end_ns() / 1000000.f;
 }
@@ -97,8 +104,8 @@ static inline void set_dpos(int dx, int dy) {
  * with the appropriate direction vector:
  *   - Left  (A or ←)  → (-1,  0)
  *   - Right (D or →)  → ( 1,  0)
- *   - Up    (W or ↑)  → ( 0,  1)
- *   - Down  (S or ↓)  → ( 0, -1) 
+ *   - Up    (W or ↑)  → ( 0, -1)
+ *   - Down  (S or ↓)  → ( 0,  1) 
  */
 static inline void position_change_event(void) {
     // TODO: Need some sample rate how many offen we read the imput form user 
@@ -121,8 +128,22 @@ static inline void position_change_event(void) {
     }
 }
 
-static inline void mose_input_event() {
-    
+static inline void eval_mause_click(const v2_i32 pos) {
+    int click_pos_x = pos.x/CORE.tail_size.w;
+    int click_pos_y = pos.y/CORE.tail_size.h;
+
+    CORE.event.action = EV_CLICK;
+    CORE.event.pos.x  = click_pos_x;
+    CORE.event.pos.y  = click_pos_y;
+
+    LOG(COMMON_LOG_INFO, "(%d %d)", click_pos_x, click_pos_y);
+}
+
+static inline void mose_input_event(void) {
+    if (platform_mouse_button_pressed(PLATFORM_MOUSE_BUTTON_LEFT)) {
+        v2_i32 pos = platform_get_mause();
+        eval_mause_click(pos);
+    }
 }
 
 static inline void input_event(void) {
@@ -134,32 +155,20 @@ static inline void input_event(void) {
     }
 }
 
-
-static inline void init_if_need(app_context *app) {
-    if (CORE.is_init) {
-        return;
-    }
-
-    if (app) {
-        CORE.app = app;
-    }
-
-    // TODO(marcin.ryzewski): move this to login scene 
-    log_in_to_server();
-    
-    CORE.is_init = true;
-} 
-
 static inline void drump_deb_info(bool dumb) {
     if (dumb == false) {
         return;
     }
-    
-    char ms[64] = {0};
+
+    v2_i32 pos = platform_get_mause();
+
+    char ms[3*64] = {0};
     sprintf(ms, "ms: %5.2f\n"
-                "player_id: %d\n",
+                "player_id: %d\n"
+                "mause_pos: (%d, %d)\n",
             CORE.bench.server_comm_delay,
-            CORE.app->client_context.id);
+            CORE.app->client_context.id,
+            pos.x/CORE.tail_size.w, pos.y/CORE.tail_size.h);
 
     platform_draw_text(ms, 0, 0, 20, 0x2bf21dff);
 }
@@ -203,6 +212,24 @@ static inline void render_plain(void) {
 
     platform_draw_epilog();
 }
+
+static inline void init_if_need(app_context *app) {
+    if (CORE.is_init) {
+        return;
+    }
+
+    if (app) {
+        CORE.app = app;
+    }
+
+    CORE.tail_size.h = CORE.app->window_height / 11;
+    CORE.tail_size.w = CORE.app->window_width  / 11;
+
+    // TODO(marcin.ryzewski): move this to login scene 
+    log_in_to_server();
+    
+    CORE.is_init = true;
+} 
 
 void main_scene_step(app_context *app) {
     if (platform_window_shoud_close()) {
