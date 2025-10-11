@@ -3,4 +3,5 @@ add_library(server_base OBJECT
     server.c
     core.c
     server_io.c
+    world_update.c
 )

@@ -16,7 +16,7 @@ typedef enum  {
 
 typedef enum  {
     HELLO_OK = 0x11,
-    EVENT_OK = 0x42,
+    UPDATE_OK = 0x42,
 } rec_head_t;
 
 typedef struct {
