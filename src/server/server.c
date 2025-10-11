@@ -53,7 +53,16 @@ static int prv_setup_epoll(void) {
 }
 
 static inline int prv_udp_step(void) {
-    int event_count = epoll_wait(prv_server_context.epollfd, prv_server_context.events, EVENT_POLL_SIZE, -1);
+    int event_count = epoll_wait(
+            prv_server_context.epollfd, 
+            prv_server_context.events, 
+            EVENT_POLL_SIZE, 0
+    );
+
+    if (event_count == 0) {
+        return 0;
+    }
+
     if (event_count < 0) {
         perror("epoll_wait");
         return -1;  
