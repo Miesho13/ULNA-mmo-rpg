@@ -67,7 +67,7 @@ static inline int prv_udp_step(void) {
             continue;
         }
         
-        if ((event_handler & EPOLLIN) && prv_server_context.fd == related_fd) {
+        if ((event_handler & EPOLLIN) && prv_server_context.fd == (int)related_fd) {
             cnet_message_t msg;
             msg.address_len = sizeof(msg.recv_sock);
 
