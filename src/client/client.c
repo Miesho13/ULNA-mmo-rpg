@@ -51,7 +51,7 @@ void good_bye(uint16_t id) {
 }
 
 void send_chang_pos(int id, int dx, int dy, uint16_t players[PLAYER_MAP_SIZE]) {
-    event_request_t request = {
+    update_request_t request = {
         .head = MOVE, 
         .id = id, 
         .dpos = {
@@ -70,9 +70,9 @@ void send_chang_pos(int id, int dx, int dy, uint16_t players[PLAYER_MAP_SIZE]) {
     memcpy(players, respone.player_map, sizeof(uint16_t)*PLAYER_MAP_SIZE);
 }
 
-int client_push_event(event_request_t *event_request) {
+int client_push_event(update_request_t *event_request) {
     if (prv_client_context.fd > 0) {
-        return client_send((uint8_t*)event_request, sizeof(event_request_t));
+        return client_send((uint8_t*)event_request, sizeof(update_request_t));
     }
     return -1;
 }

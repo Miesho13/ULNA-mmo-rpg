@@ -17,7 +17,7 @@ void good_bye(uint16_t id);
 int hello_to_server(void);
 void send_chang_pos(int id, int dx, int dy, uint16_t players[PLAYER_MAP_SIZE]);
 
-int client_push_event(event_request_t *event_request);
+int client_push_event(update_request_t *event_request);
 int client_recv_update_event(update_respone_t *update_respone);
 
 
