@@ -12,5 +12,13 @@
 
 #define MAX_PLAYER_COUNT (UINT16_MAX)
 
+#define WIN 11 
+#define WORD_MAP (255 * 255)
+#define WORD_MAP_H (255)
+#define WORD_MAP_W (255)
+
+// TIMERS REST VALUES 
+#define SERVER_COLLECTION_DATA_US (30 * 1000) 
+
 #endif // SERVER_CFG 
 
