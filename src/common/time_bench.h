@@ -35,8 +35,8 @@ int main() {
 }
 */
 
-void timer_reset(common_timert *tim, uint64_t val);
-bool     timer_elapsed(common_timert *tim);
+void time_reset(common_timert *tim, uint64_t val);
+bool time_elapsed(common_timert *tim);
 
 
 #endif //TIME_BENCH

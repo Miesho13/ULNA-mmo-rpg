@@ -26,7 +26,6 @@ uint64_t time_end_ns(void) {
     return TIM.elapsed;
 }
 
-uint64_t time_now_us(void);
 uint64_t time_now_us(void) {
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
