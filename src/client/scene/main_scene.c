@@ -30,7 +30,7 @@ typedef struct {
 
     event_t event;
     event_t event_to_handle[EVENT_MAX_SIZE];
-    uint16_t player_tile_map[MAIN_SCENE_TILE_BUFF_SIZE];
+    map_grid player_tile_map[MAIN_SCENE_TILE_BUFF_SIZE];
 
     struct {
         bool debug_dump_info;
@@ -82,13 +82,26 @@ static inline void server_communication(void) {
     update_respone_t update_respone = {0};
     client_recv_update_event(&update_respone);
     
-    memcpy(CORE.event_to_handle, update_respone.events, EVENT_MAX_SIZE);
+    memcpy(CORE.event_to_handle, update_respone.events, sizeof(event_t)*EVENT_MAX_SIZE);
     memcpy(CORE.player_tile_map, update_respone.player_map, 
-           sizeof(uint16_t) * MAIN_SCENE_TILE_BUFF_SIZE);
+           sizeof(map_grid) * MAIN_SCENE_TILE_BUFF_SIZE);
 
     clear_after_send();
 
     CORE.bench.server_comm_delay = time_end_ns() / 1000000.f;
+
+    printf("INCOMING DATA:\n");
+        printf("\tupdate_respone.events:\n");
+    for (int i = 0; i < 12; i++) {
+        printf("\tevent: [%d %d (%d %d)]\n", 
+                update_respone.events[i].action, 
+                update_respone.events[i].player_id, 
+                update_respone.events[i].relative_pos.x,
+                update_respone.events[i].relative_pos.y);
+    }
+    printf("update_respone.head %d\n", update_respone.head);
+    printf("update_respone.pos.x %d\n", update_respone.pos.x);
+    printf("update_respone.pos.y %d\n", update_respone.pos.y);
 }
 
 /* Hanel an users's inputs */ 
@@ -133,8 +146,8 @@ static inline void eval_mause_click(const v2_i32 pos) {
     int click_pos_y = pos.y/CORE.tail_size.h;
 
     CORE.event.action = EV_CLICK;
-    CORE.event.pos.x  = click_pos_x;
-    CORE.event.pos.y  = click_pos_y;
+    CORE.event.relative_pos.x  = click_pos_x;
+    CORE.event.relative_pos.y  = click_pos_y;
 
     LOG(COMMON_LOG_INFO, "(%d %d)", click_pos_x, click_pos_y);
 }
@@ -180,16 +193,16 @@ static inline void render_players_demo(void) {
     int x = 0;
     int y = 0;
     for (int player = 0; player < 11 * 11; player++) {
-        if (CORE.player_tile_map[player] != CORE.app->client_context.id && CORE.player_tile_map[player] != 0) {
+        if (CORE.player_tile_map[player].posytion != CORE.app->client_context.id && CORE.player_tile_map[player].posytion != 0) {
             platform_draw_ractangle(x * tile_w, y * tile_h, tile_w, tile_h, 0xFF0000FF);
             char buffer[24] = {0};
-            sprintf(buffer, "%d", CORE.player_tile_map[player]);
+            sprintf(buffer, "%d", CORE.player_tile_map[player].posytion);
             platform_draw_text(buffer, x * tile_w + 30, y * tile_h, tile_w, 0xFFFFFFFF);
 
-        } else if (CORE.player_tile_map[player] == CORE.app->client_context.id) {
+        } else if (CORE.player_tile_map[player].posytion == CORE.app->client_context.id) {
             platform_draw_ractangle(x * tile_w, y * tile_h, tile_w, tile_h, 0x00FF00FF);
             char buffer[24] = {0};
-            sprintf(buffer, "%d", CORE.player_tile_map[player]);
+            sprintf(buffer, "%d", CORE.player_tile_map[player].posytion);
             platform_draw_text(buffer, x * tile_w + 30, y * tile_h, tile_w, 0xFFFFFFFF);
 
         }
