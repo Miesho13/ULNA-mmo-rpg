@@ -2,7 +2,11 @@
 #define SERVER_CLIENT_IO
 
 #include <stdint.h>
-#include <wayland-client-protocol.h>
+#include "common.h"
+
+#define WORLD_LOCAL_W (11)
+#define WORLD_LOCAL_H (11)
+#define WORLD_LOCAL_BUFFER (WORLD_LOCAL_W * WORLD_LOCAL_H)
 
 typedef enum  {
     HELLO  = 0x11,
@@ -34,6 +38,11 @@ typedef struct {
 } good_bye_request_t;
 
 typedef struct {
+    uint16_t posytion; 
+    uint16_t claster; 
+} map_grid;
+
+typedef struct {
     uint8_t head; 
     struct {
         int x; 
@@ -46,11 +55,9 @@ typedef struct {
 #define EVENT_MAX_SIZE  64
 
 typedef struct {
+    uint16_t player_id;
     uint8_t action;
-    struct {
-        int x;
-        int y;
-    } pos;
+    v2_i32 relative_pos;
 } event_t;
 
 typedef struct {
@@ -69,8 +76,8 @@ typedef struct {
         int x; 
         int y; 
     } pos;
-    uint16_t  player_map[PLAYER_MAP_SIZE]; 
-    uint8_t   npc_map[PLAYER_MAP_SIZE]; 
+    map_grid  player_map[WORLD_LOCAL_BUFFER]; 
+    uint8_t   npc_map[WORLD_LOCAL_BUFFER]; 
     event_t   events[EVENT_MAX_SIZE]; 
 } update_respone_t;
 
