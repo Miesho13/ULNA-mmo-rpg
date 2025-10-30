@@ -31,6 +31,7 @@ void platform_clear_background(uint32_t color) {
 
 void platform_init_window(int width, int height, const char *title, int target_fps) {
     InitWindow(width, height, title);
+    SetWindowState(FLAG_WINDOW_RESIZABLE);
     SetTargetFPS(target_fps);
 }
 
