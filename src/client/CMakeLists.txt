@@ -5,9 +5,13 @@ add_library(client_base OBJECT
     game.c 
     platform.c
     client.c
+    renderer.c 
 )
 
 add_library(game_scen_obj OBJECT 
     scene/main_scene.c
+    scene/login_screan.c
+    scene/scene.c
+    scene/render_test_scene.c
 )
 
