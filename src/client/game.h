@@ -16,8 +16,6 @@ typedef struct {
     bool game_close;
 } app_context;
 
-// scene 
-void main_scene_step(app_context *app);
 
 // general
 void close_game(void);
