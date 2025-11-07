@@ -1,39 +1,36 @@
 #ifndef __RENDERER_H__
 #define __RENDERER_H__
 
+#include "common.h"
+#include "client_config.h"
+#include "platform.h"
+
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "dynamic_array.h"
-#include "raylib.h"
-#include "sprite_data.h"
-#include "sprite_data.h"
-
-typedef vec_array vec_render_obj;
+typedef enum {
+    RENDER_ERR_OK  = 0,
+    RENDER_ERR_ERR,
+} render_err;
 
 typedef struct {
-    Vector2 pos;
-    uint32_t id;
-} render_obj;
+    uint8_t *data;
+    int height;
+    int width;
+} tails;
 
 typedef struct {
-    Image *image_buffer;
-    size_t image_buffer_size;
+    platform_img img[RENDER_MAX_SPRITE_SIZE];
+    platform_sprite sprite[RENDER_MAX_SPRITE_SIZE];
+    size_t sprite_count;
+    float scale;
+} render_sprite_vector;
 
-    Texture *text_buffer;
-    size_t text_buffer_size;
+render_err render_load_sprite_from_plain(render_sprite_vector *ctx, const char *path, 
+                                         v2_i32 sprite_size, float scale);
 
-    char *path_to_sprites_sheet;
-    double scale;
 
-    // TODO(marcin.ryzewskii@gmail.com): Can we have a problem
-    // with precision in dobule can we?
-    double scale_sprite_width;
-    double scale_sprite_height;
+// void render_plain(tails *draw_bufffer, size_t len, const int HEIGHT, const int WIDTH);
 
-} renderer_ctx_t;
-
-void rend_init(renderer_ctx_t *rctx, sprite_loader_path_t *sheet_data, double scale);
-void rend_draw_vector(const renderer_ctx_t *rctx, const vec_array objects_v);
 
 #endif
