@@ -131,24 +131,52 @@ typedef enum {
     PLATFORM_MOUSE_BUTTON_BACK    = 6,
 } mouse_button_t;
 
+typedef struct {
+    void *data;
+    int width;
+    int height;
+    int mipmaps;
+    int format;
+} platform_img;
+
+typedef struct {
+    unsigned int id;        // OpenGL texture id
+    int width;              // Texture base width
+    int height;             // Texture base height
+    int mipmaps;            // Mipmap levels, 1 by default
+    int format;             // Data format (PixelFormat type)
+} platform_sprite;
+
+uint32_t platform_color_brightness(uint32_t color, float scale);
+
+// window
+void platform_init_window(int width, int height, const char *title, int target_fps);
+int  platform_get_win_height(void);
+int  platform_get_win_width(void);
+bool platform_window_shoud_close(void);
+
+// img
+platform_img platform_load_img(const char *path);
+platform_img platform_load_img_from_image(platform_img img, int x, int y, int width, int height);
+void platform_img_resize(void *img, int w, int h);
+platform_sprite platform_load_to_gpu(void *img);
+
+// draw
 void platform_draw_prolog(void);
 void platform_draw_epilog(void);
+void platform_render(void *sprite, int x, int y, uint32_t color);
 void platform_clear_background(uint32_t color);
-void platform_init_window(int width, int height, const char *title, int target_fps);
-void platform_load_sprite_sheets(const char **sprite_sheets_path, size_t image_count);                        
-bool platform_window_shoud_close(void);
 void platform_draw_ractangle(int posX, int posY, int width, int height, uint32_t color);
 void platform_draw_text(const char *text, int posX, int posY, int fontSize, uint32_t color);                
 
-// INPUT HANDLE
+// keyboard input
 bool platform_key_press(keyboard_key key);
 bool platform_key_down(keyboard_key key);
 bool platform_key_relased(keyboard_key key);
 bool platform_key_up(keyboard_key key);
 bool platform_key_pressed_pepeat(keyboard_key key);
 
-// Mause input
-
+// mause input
 bool platform_mouse_button_pressed(int button);
 bool platform_mouse_button_down(int button);
 bool platform_mouse_button_released(int button);
