@@ -9,7 +9,7 @@ render_err render_load_sprite_from_plain(render_sprite_vector *sprite_vector, co
     const platform_img plain = platform_load_img(path);
     const uint32_t sprite_coutn = (plain.width/sprite_size.x) * (plain.height/sprite_size.y);
 
-    if (sprite_coutn < 1) { return RENDER_ERR_ERR; }
+    if (sprite_coutn < 1) { return RENDER_ERR; }
     
     const int width = sprite_size.x;
     const int height = sprite_size.y; 
@@ -19,7 +19,7 @@ render_err render_load_sprite_from_plain(render_sprite_vector *sprite_vector, co
     int x = 0; int y = 0; 
     for (uint32_t sprite = 0; sprite < sprite_coutn; sprite++) {
         if (sprite_vector->sprite_count >= RENDER_MAX_SPRITE_SIZE) {
-            return RENDER_ERR_ERR;
+            return RENDER_ERR;
         }
 
         platform_img       *local_img = &sprite_vector->img[sprite_vector->sprite_count];
@@ -43,7 +43,7 @@ render_err render_load_sprite_from_plain(render_sprite_vector *sprite_vector, co
 
     }
 
-    return RENDER_ERR_OK; 
+    return RENDER_OK; 
 }
 
  

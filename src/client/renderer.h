@@ -9,15 +9,9 @@
 #include <stdlib.h>
 
 typedef enum {
-    RENDER_ERR_OK  = 0,
-    RENDER_ERR_ERR,
+    RENDER_OK  = 0,
+    RENDER_ERR,
 } render_err;
-
-typedef struct {
-    uint8_t *data;
-    int height;
-    int width;
-} tails;
 
 typedef struct {
     platform_img img[RENDER_MAX_SPRITE_SIZE];
@@ -29,8 +23,6 @@ typedef struct {
 render_err render_load_sprite_from_plain(render_sprite_vector *ctx, const char *path, 
                                          v2_i32 sprite_size, float scale);
 
-
-// void render_plain(tails *draw_bufffer, size_t len, const int HEIGHT, const int WIDTH);
 
 
 #endif
