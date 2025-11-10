@@ -7,6 +7,7 @@ add_library(client_base OBJECT
     client.c
     renderer.c 
     tile.c
+    ui.c
 )
 
 add_library(game_scen_obj OBJECT 

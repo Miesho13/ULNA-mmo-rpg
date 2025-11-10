@@ -27,6 +27,13 @@
 #define RENDER_MAX_SPRITE_SIZE (5 * 1024) 
 #define RENDER_PLAIN_SPRITE    (12*12)
 
+// UI
+#define UI_ASSETS_SIZE_BUFFER     (1024) 
+#define UI_MAX_ASSETS_TO_DISPLAY  (512) 
+#define UI_MAX_ASSETS_TO_DISPLAY_BYTE  (1024) 
+#define UI_QUANT (16) // unit = px
+#define UI_MSG_BOX_DEAFULT_FONT_SIZE (8)
+
 // GAME WINDOW
 #define TILES_H (20)
 #define TILES_W (20)
