@@ -185,7 +185,7 @@ int platform_get_mause_x(void);
 int platform_get_mause_y(void);
 v2_i32 platform_get_mause(void);
 
-// Time
-
+// text
+int platform_mesure_text(const char *text, int fontSize);
 
 #endif // CLIENT_PLATFORM_H 

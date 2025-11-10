@@ -174,3 +174,6 @@ v2_i32 platform_get_mause(void) {
     return (v2_i32){platform_get_mause_x(), platform_get_mause_y()};
 }
 
+int platform_mesure_text(const char *text, int fontSize) {
+    return MeasureText(text, fontSize);
+}
