@@ -4,14 +4,15 @@
 #include "renderer.h" 
 
 typedef struct {
-    int tile_h;
-    int tile_w;
+    int layer_h;
+    int layer_w;
 
     struct {
         int w;
         int h;
     } sprite_size; 
 
+    render_sprite_vector *sprites;
 } tile_plane; 
 
 void tile_init(tile_plane *ctx, int sprite_w, int sprite_h, int tile_h, int tile_w);
@@ -20,5 +21,6 @@ void tile_set(tile_plane *ctx, platform_sprite sprite,
 void tile_render_sprite(tile_plane *ctx, platform_sprite *sprite, int pos_x, int pos_y);
 void tile_render_plane(tile_plane *ctx, platform_sprite *sprite);
      
+void tile_render_layer(tile_plane *tile, uint32_t *sprites);
 
 #endif
