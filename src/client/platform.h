@@ -160,6 +160,9 @@ platform_img platform_load_img(const char *path);
 platform_img platform_load_img_from_image(platform_img img, int x, int y, int width, int height);
 void platform_img_resize(void *img, int w, int h);
 platform_sprite platform_load_to_gpu(void *img);
+void platform_unload_sprite(void *sprite);
+platform_img platform_img_copy(void *img);
+
 
 // draw
 void platform_draw_prolog(void);

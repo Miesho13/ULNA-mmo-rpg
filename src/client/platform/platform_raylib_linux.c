@@ -177,3 +177,14 @@ v2_i32 platform_get_mause(void) {
 int platform_mesure_text(const char *text, int fontSize) {
     return MeasureText(text, fontSize);
 }
+
+platform_img platform_img_copy(void *img) {
+    Image copy_img = ImageCopy(*(Image*)img);
+    platform_img ret_img = {0};
+    memcpy(&ret_img, &copy_img, sizeof(Image));
+    return ret_img;
+}
+
+void platform_unload_sprite(void *sprite) {
+    UnloadTexture(*(Texture2D*)sprite);
+}
