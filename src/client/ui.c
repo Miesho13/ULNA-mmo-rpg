@@ -2,8 +2,6 @@
 #include "client_config.h"
 #include "platform.h"
 
-
-
 static const assets_meta_data prv_assets_meta_data[] = {
     // MESSAGE BOX
     {
@@ -45,6 +43,7 @@ static void ui_msg_box_recipe(ui_context *ctx, void *ui_element) {
     );
 }
 
+// TODO: we shoud contain recipe for each context in seperate file
 typedef void (*ui_recipe)(ui_context *ctx, void *ui_element);
 
 static ui_recipe call_recipe[] = {
@@ -74,15 +73,54 @@ void ui_load_assets(ui_context *ctx, const char *path) {
     }
 }
 
-void ui_push_msg_box(ui_context *ui_ctx, const char *msg, int pos_x, int pos_y, double scale) {
+void ui_move_element(ui_context *ui, int id, int pos_x, int pos_y) {
+    ui_element *it = ui->render.ui_head;
+
+    while (it->id != id) {
+        it = (ui_element*)it->next;
+    }
+
+    it->pos.x = pos_x;
+    it->pos.y = pos_y;
+}
+
+void static ui_element_free(ui_element *element) {
+    platform_unload_sprite(&element->sprite);
+    free(element);
+}
+
+void ui_remove(ui_context *ui, int id) {
+    ui_element *it = ui->render.ui_head;
+    ui_element *it_next = ((ui_element*)ui->render.ui_head)->next;
+
+    if (it->id == id) {
+        ui->render.ui_head = it_next;
+        ui_element_free(it);
+        return;
+    } 
+
+    while (it_next != NULL) {
+        if (it_next->id == id) {
+            it->next = it_next->next;
+            ui_element_free(it_next);
+            break;
+        }
+
+        it = it_next; 
+        it_next = it->next;
+    } 
+
+}
+
+int ui_push_msg_box(ui_context *ui, const char *msg, int pos_x, int pos_y, double scale) {
     ui_element *it;
 
-    if (!ui_ctx->render.ui_head) {
+    if (!ui->render.ui_head) {
         it = malloc(sizeof(ui_msg_box));
-        ui_ctx->render.ui_head = it;
+        ui->render.ui_head = it;
     } 
     else {
-        it = ui_ctx->render.ui_head;
+        it = ui->render.ui_head;
 
         while (it->next) {
             it = (ui_element*)it->next;
@@ -95,7 +133,7 @@ void ui_push_msg_box(ui_context *ui_ctx, const char *msg, int pos_x, int pos_y, 
     ui_msg_box *new_el = (ui_msg_box*)it;
 
     new_el->text = msg;
-    new_el->ui_element.id    = ui_ctx->render.element_count++;
+    new_el->ui_element.id    = ui->render.element_count++;
     new_el->ui_element.type  = UI_MSG_BOX;
     new_el->ui_element.flags = UI_MOVABLE | UI_VISABLE;
     new_el->ui_element.pos.x = pos_x;
@@ -103,26 +141,28 @@ void ui_push_msg_box(ui_context *ui_ctx, const char *msg, int pos_x, int pos_y, 
     new_el->ui_element.next  = NULL;
 
     // SCALE IMAGE IF NEEDED
-    platform_img img = ui_ctx->asset_img[UI_MSG_BOX];
+    platform_img img  = platform_img_copy(&ui->asset_img[UI_MSG_BOX]);
     if ((new_el->ui_element.scale = scale) != 1.0) {
         platform_img_resize(
-            &img, ui_ctx->asset_img[UI_MSG_BOX].width*scale, 
-            ui_ctx->asset_img[UI_MSG_BOX].height*scale
+            &img, ui->asset_img[UI_MSG_BOX].width*scale, 
+            ui->asset_img[UI_MSG_BOX].height*scale
         ); 
     }
 
-    new_el->ui_element.sprite = platform_load_to_gpu(&img);
+    new_el->ui_element.size.height =  img.height;
+    new_el->ui_element.size.width  =  img.width;
+    new_el->ui_element.sprite      =  platform_load_to_gpu(&img);
+
+    return new_el->ui_element.id;
 }
 
-void ui_render(ui_context *ctx) {
-    ui_element *it = ctx->render.ui_head;
+void ui_render(ui_context *ui) {
+    ui_element *it = ui->render.ui_head;
 
     while (it) {
-        call_recipe[it->type](ctx, it);
+        if ((it->flags & UI_VISABLE) == UI_VISABLE) {
+            call_recipe[it->type](ui, it);
+        }
         it = it->next;
     }
-}
-
-void ui_event_loop(ui_context *ctx) { 
-    (void)ctx;
 }

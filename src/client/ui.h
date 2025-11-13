@@ -48,6 +48,11 @@ typedef struct {
         int y;
     } pos;
 
+    struct {
+        int height;
+        int width;
+    } size;
+
     platform_sprite sprite;
     double scale;
 
@@ -63,7 +68,11 @@ typedef struct {
 void ui_load_assets(ui_context *ctx, const char *path);
 void ui_event_loop(ui_context *ctx);
 void ui_render(ui_context *ctx);
+void ui_remove(ui_context *ui, int id);
 
-void ui_push_msg_box(ui_context *ui_ctx, const char *msg, int pos_x, int pos_y, double scale);
+void ui_element_change_pos(ui_context *ui_ctx, int new_x, int new_y);
+void ui_element_press(ui_context *ui_ctx, v2_i32 cursor_pos);
+
+int ui_push_msg_box(ui_context *ui_ctx, const char *msg, int pos_x, int pos_y, double scale);
 
 #endif // _UI_H_
