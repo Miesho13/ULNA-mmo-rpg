@@ -1,6 +1,6 @@
 #include "ui.h"
 #include "client_config.h"
-#include "platform.h"
+#include "../platform/platform.h"
 
 static const assets_meta_data prv_assets_meta_data[] = {
     // MESSAGE BOX

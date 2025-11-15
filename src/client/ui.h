@@ -2,7 +2,7 @@
 #define _UI_H_
 
 #include "client_config.h"
-#include "platform.h"
+#include "../platform/platform.h"
 
 #include <stdbool.h>
 

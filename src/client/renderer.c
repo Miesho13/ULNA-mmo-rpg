@@ -1,5 +1,5 @@
 #include "renderer.h"
-#include "platform.h"
+#include "../platform/platform.h"
 #include "client_config.h"
 
 render_err render_load_sprite_from_plain(render_sprite_vector *sprite_vector, const char *path, 

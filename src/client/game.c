@@ -1,5 +1,5 @@
 #include "./game.h"
-#include "./platform.h"
+#include "../platform/platform.h"
 #include "client.h"
 #include "common.h"
 #include "server_client_io.h"

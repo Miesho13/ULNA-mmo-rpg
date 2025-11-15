@@ -1,5 +1,5 @@
 #include "../game.h"
-#include "../platform.h"
+#include "../platform/platform.h"
 #include "../client.h"
 #include "main_scene_cfg.h"
 #include "common.h"

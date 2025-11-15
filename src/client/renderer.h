@@ -3,7 +3,7 @@
 
 #include "common.h"
 #include "client_config.h"
-#include "platform.h"
+#include "../platform/platform.h"
 
 #include <stdint.h>
 #include <stdlib.h>
