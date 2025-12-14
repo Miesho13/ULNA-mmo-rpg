@@ -1,4 +1,4 @@
-#include "platform.h"
+#include "./platform.h"
 #include "raylib.h"
 #include "common.h"
 
@@ -39,6 +39,18 @@ void platform_draw_prolog(void) {
 
 void platform_draw_epilog(void) {
     EndDrawing();
+}
+
+void platform_draw_line(int start_x, int start_y, int end_x, int end_y, float thick, uint32_t color)
+{
+    Color cl = {
+        .r = (color & 0xFF000000) >> 8*3,
+        .g = (color & 0x00FF0000) >> 8*2,
+        .b = (color & 0x0000FF00) >> 8*1,
+        .a = (color & 0x000000FF) >> 8*0
+    };
+
+    DrawLineEx((Vector2){start_x, start_y}, (Vector2){end_x, end_y}, thick, cl);
 }
 
 void platform_clear_background(uint32_t color) {
@@ -88,6 +100,16 @@ platform_sprite platform_load_to_gpu(void *img) {
     platform_sprite dst;
     memcpy(&dst, &texture, sizeof(dst));
     return dst;
+}
+
+void platform_scissor_mode(int x, int y, int width, int height)
+{
+    BeginScissorMode(x, y, width, height);
+}
+
+void platform_end_scissor_mode(void)
+{
+    EndScissorMode();
 }
 
 void platform_img_resize(void *img, int w, int h) {
