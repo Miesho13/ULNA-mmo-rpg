@@ -3,4 +3,5 @@ add_library(map-edit-obj
     platform.c
     sprite.c
     map_edit.c
+    hit_grid.c
 )
