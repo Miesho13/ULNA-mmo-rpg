@@ -1,6 +1,7 @@
 #include "../platform/platform.h"
 #include "pick_color.h"
 #include "sprite.h"
+#include "hit_grid.h"
 
 static struct {
     struct {
@@ -9,6 +10,8 @@ static struct {
     } window_size;
 
     sprite_context sprite_ctx; 
+
+    hit_grid hit_grid_ctx;
 
     struct {
         struct {
@@ -87,11 +90,22 @@ static struct {
 static inline void input_event(void) 
 {
     // current mouse posytion
-
     CORE.input_event.mause_pos.x = platform_get_mause_x();
     CORE.input_event.mause_pos.y = platform_get_mause_y();
-}
 
+    if (platform_mouse_button_down(PLATFORM_MOUSE_BUTTON_LEFT)) {
+        grid_pos pos = hit_grid_pixel_to_cell(
+            &CORE.hit_grid_ctx, 
+            CORE.input_event.mause_pos.x, 
+            CORE.input_event.mause_pos.y
+        );
+
+        hit_event *test = hit_grid_get(&CORE.hit_grid_ctx, pos.x, pos.y);
+        if (test && test->call) {
+            test->call(test);
+        }
+    }
+}
 
 static inline void render_right_background(int start_x, int start_y, int width, int height) 
 {
@@ -108,21 +122,30 @@ static inline void render_right_background(int start_x, int start_y, int width, 
     platform_draw_line(start_x, start_y, start_x, start_y + height, 2, WIN_TOP_LEFT_BORDER);
 }
 
+void on_click_callback(hit_event *self) 
+{
+    printf("call id: %d\n", self->value.i32);
+}
+
 static inline void render_sprite_picker(int start_x, int start_y, int width, int height) 
 {
     const int sprite_w = CORE.sprite_ctx.sprite[0].width;
     const int sprite_h = CORE.sprite_ctx.sprite[0].height;
 
     const int max_pixel_per_row = CORE.ui.right_bar.WIDTH;
-    const int sprite_margin = CORE.ui.right_bar.sprite_picker.item_margin;
+    const int sprite_margin = 16; //CORE.ui.right_bar.sprite_picker.item_margin;
 
-    const int start_x_margin = start_x + CORE.ui.right_bar.sprite_picker.off_start_x;
-    const int start_y_margin = start_y + CORE.ui.right_bar.sprite_picker.off_start_y;
+    const int start_x_margin = start_x; // + CORE.ui.right_bar.sprite_picker.off_start_x;
+    const int start_y_margin = start_y; // + CORE.ui.right_bar.sprite_picker.off_start_y;
 
     int pixel_counter = 0;
     int x = 0; int y = 0;
     for (int id = 0; id < 255; ++id) {
-        render_sprite(&CORE.sprite_ctx, id, start_x_margin + x*(sprite_w + sprite_margin), start_y_margin + y*(sprite_h + sprite_margin));
+        render_sprite(
+            &CORE.sprite_ctx, id, 
+            start_x_margin + x*(sprite_w + sprite_margin),
+            start_y_margin + y*(sprite_h + sprite_margin)
+        );
 
         pixel_counter += sprite_w + sprite_margin;
         x++;
@@ -181,9 +204,20 @@ static inline void render_top_bar(void)
     platform_end_scissor_mode();
 }
 
+static inline void render_backlight(void) 
+{
+    const int mause_x = CORE.input_event.mause_pos.x;
+    const int mause_y = CORE.input_event.mause_pos.y;
+
+    grid_pos pos = hit_grid_pixel_to_cell(&CORE.hit_grid_ctx, mause_x, mause_y);
+    platform_draw_ractangle(
+        pos.x * CORE.hit_grid_ctx.cell_size.width, 
+        pos.y * CORE.hit_grid_ctx.cell_size.height, 
+        CORE.hit_grid_ctx.cell_size.width, CORE.hit_grid_ctx.cell_size.height, 0xa926b7AA);
+}
+
 static inline void render_canvas(void) 
 {
-
 
 }
 
@@ -199,6 +233,7 @@ static inline void render(void)
     render_top_bar();
     render_right_bar();
     render_canvas();
+    render_backlight();
 
     platform_draw_epilog();
 }
@@ -209,10 +244,39 @@ static inline void update_window_event(void)
     CORE.window_size.HEIGHT = platform_get_win_height();
 }
 
+static inline void hit_gid_service(void)
+{
+
+}
+
+void test_button(hit_event *context) 
+{
+    printf("cell: %d\n", context->value.i32);
+}
+
+static inline void polute_grid_on_screan(void) 
+{
+    int x = 0; int y = 0;
+
+    int idx = 0;
+    for (int y = 0; y < 10; ++y) 
+    for (int x = 0; x < 10; ++x) {
+        hit_event event = {
+            .value.i32 = idx++,
+            .call = test_button,
+            .user_arg = NULL,
+        };
+
+        hit_grid_push(&CORE.hit_grid_ctx, x, y, event);
+    }
+}
+
 void map_edit_init(void) 
 {
     platform_init_window(CORE.window_size.WIDTH, CORE.window_size.HEIGHT, "ulma-map-edit", 144);
     load_sprite(&CORE.sprite_ctx);
+    hit_grid_init(&CORE.hit_grid_ctx, 16, 16);
+    // polute_grid_on_screan();
 }
 
 void map_edit_run(void) 
