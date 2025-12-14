@@ -167,10 +167,16 @@ platform_img platform_img_copy(void *img);
 // draw
 void platform_draw_prolog(void);
 void platform_draw_epilog(void);
+
+void platform_scissor_mode(int x, int y, int width, int height);
+void platform_end_scissor_mode(void);
+
+void platform_draw_line(int start_x, int start_y, int end_x, int end_y, float thick, uint32_t color);
 void platform_render(void *sprite, int x, int y, uint32_t color);
 void platform_clear_background(uint32_t color);
 void platform_draw_ractangle(int posX, int posY, int width, int height, uint32_t color);
 void platform_draw_text(const char *text, int posX, int posY, int fontSize, uint32_t color);                
+
 
 // keyboard input
 bool platform_key_press(keyboard_key key);
