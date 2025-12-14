@@ -39,7 +39,7 @@ add_executable(${SERVER_NAME}
 )
 
 # -- mam edit --- 
-set(MAP_EDIT map-edit)
+set(MAP_EDIT ulna-map-edit)
 add_executable(${MAP_EDIT}
     $<TARGET_OBJECTS:map-edit-obj>
 )
