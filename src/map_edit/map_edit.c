@@ -94,7 +94,7 @@ static inline void input_event(void)
     CORE.input_event.mause_pos.y = platform_get_mause_y();
 
     if (platform_mouse_button_down(PLATFORM_MOUSE_BUTTON_LEFT)) {
-        grid_pos pos = hit_grid_pixel_to_cell(
+        hit_grid_pos pos = hit_grid_pixel_to_cell(
             &CORE.hit_grid_ctx, 
             CORE.input_event.mause_pos.x, 
             CORE.input_event.mause_pos.y
@@ -209,7 +209,7 @@ static inline void render_backlight(void)
     const int mause_x = CORE.input_event.mause_pos.x;
     const int mause_y = CORE.input_event.mause_pos.y;
 
-    grid_pos pos = hit_grid_pixel_to_cell(&CORE.hit_grid_ctx, mause_x, mause_y);
+    hit_grid_pos pos = hit_grid_pixel_to_cell(&CORE.hit_grid_ctx, mause_x, mause_y);
     platform_draw_ractangle(
         pos.x * CORE.hit_grid_ctx.cell_size.width, 
         pos.y * CORE.hit_grid_ctx.cell_size.height, 
