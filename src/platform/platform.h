@@ -176,6 +176,8 @@ void platform_render(void *sprite, int x, int y, uint32_t color);
 void platform_clear_background(uint32_t color);
 void platform_draw_ractangle(int posX, int posY, int width, int height, uint32_t color);
 void platform_draw_text(const char *text, int posX, int posY, int fontSize, uint32_t color);                
+void platform_relative_mode_prolog(int x, int y);
+void platform_relative_mode_epilog(void);
 
 
 // keyboard input

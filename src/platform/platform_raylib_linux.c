@@ -8,9 +8,15 @@
 #include <string.h>
 
 static struct {
-    Image sprite_sheets[SPRITE_SHEETS_MAX_COUNT];
-    Image image_vector[SPRITE_SHEETS_MAX_COUNT];
-} platform_context;
+    struct {
+        bool enable;
+        int x; int y;
+    } relative_mode;
+} platform_context = {
+    .relative_mode =  {
+        .enable = false,
+    },
+};
 
 uint32_t platform_color_brightness(uint32_t color, float scale) {
     int r = (color & 0xFF000000) >> 24;
@@ -23,6 +29,17 @@ uint32_t platform_color_brightness(uint32_t color, float scale) {
     b *= scale;
 
     return (uint32_t)(r << 24 | g << 16 | b << 8 | a);
+}
+
+
+void platform_relative_mode_prolog(int x, int y) {
+    platform_context.relative_mode.enable = true;
+    platform_context.relative_mode.x = x;
+    platform_context.relative_mode.y = y;
+}
+
+void platform_relative_mode_epilog(void) {
+    platform_context.relative_mode.enable = false;
 }
 
 int platform_get_win_height(void) {
@@ -43,6 +60,14 @@ void platform_draw_epilog(void) {
 
 void platform_draw_line(int start_x, int start_y, int end_x, int end_y, float thick, uint32_t color)
 {
+    if (platform_context.relative_mode.enable) {
+        start_x += platform_context.relative_mode.x;
+        start_y += platform_context.relative_mode.y;
+
+        end_x += platform_context.relative_mode.x;
+        end_y += platform_context.relative_mode.y;
+    }
+
     Color cl = {
         .r = (color & 0xFF000000) >> 8*3,
         .g = (color & 0x00FF0000) >> 8*2,
@@ -104,6 +129,14 @@ platform_sprite platform_load_to_gpu(void *img) {
 
 void platform_scissor_mode(int x, int y, int width, int height)
 {
+    if (platform_context.relative_mode.enable) {
+        x += platform_context.relative_mode.x;
+        y += platform_context.relative_mode.y;
+
+        width += platform_context.relative_mode.x;
+        height += platform_context.relative_mode.y;
+    }
+
     BeginScissorMode(x, y, width, height);
 }
 
@@ -117,6 +150,11 @@ void platform_img_resize(void *img, int w, int h) {
 }
 
 void platform_render(void *sprite, int x, int y, uint32_t color) {
+    if (platform_context.relative_mode.enable) {
+        x += platform_context.relative_mode.x;
+        y += platform_context.relative_mode.y;
+    }
+
     Color cl = {
         .r = (color & 0xFF000000) >> 8*3,
         .g = (color & 0x00FF0000) >> 8*2,
@@ -127,7 +165,15 @@ void platform_render(void *sprite, int x, int y, uint32_t color) {
     DrawTexture(*(Texture2D*)sprite, x, y, cl);
 }
 
-void platform_draw_ractangle(int posX, int posY, int width, int height, uint32_t color) {
+void platform_draw_ractangle(int x, int y, int width, int height, uint32_t color) {
+    if (platform_context.relative_mode.enable) {
+        x += platform_context.relative_mode.x;
+        y += platform_context.relative_mode.y;
+
+        width += platform_context.relative_mode.x;
+        height += platform_context.relative_mode.y;
+    }
+
     Color cl = {
         .r = (color & 0xFF000000) >> 8*3,
         .g = (color & 0x00FF0000) >> 8*2,
@@ -135,7 +181,7 @@ void platform_draw_ractangle(int posX, int posY, int width, int height, uint32_t
         .a = (color & 0x000000FF) >> 8*0
     };
 
-    DrawRectangle(posX, posY, width, height, cl);
+    DrawRectangle(x, y, width, height, cl);
 }
 
 bool platform_key_press(keyboard_key key) {
@@ -158,14 +204,19 @@ bool platform_key_pressed_pepeat(keyboard_key key) {
     return IsKeyPressedRepeat(key);
 }
 
-void platform_draw_text(const char *text, int posX, int posY, int fontSize, uint32_t color) {
+void platform_draw_text(const char *text, int x, int y, int fontSize, uint32_t color) {
+    if (platform_context.relative_mode.enable) {
+        x += platform_context.relative_mode.x;
+        y += platform_context.relative_mode.y;
+    }
+
     Color cl = {
         .r = (color & 0xFF000000) >> 8*3,
         .g = (color & 0x00FF0000) >> 8*2,
         .b = (color & 0x0000FF00) >> 8*1,
         .a = (color & 0x000000FF) >> 8*0
     };
-    DrawText(text, posX, posY, fontSize, cl);
+    DrawText(text, x, y, fontSize, cl);
 }
 
 bool platform_mouse_button_pressed(int button) {
