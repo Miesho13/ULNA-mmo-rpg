@@ -36,11 +36,11 @@ typedef struct {
 typedef struct {
     int x;
     int y;
-} grid_pos;
+} hit_grid_pos;
 
-void       hit_grid_init(hit_grid *ctx, int hight, int width);
-int        hit_grid_push(hit_grid *ctx, int x, int y, hit_event event);
-hit_event* hit_grid_get(hit_grid *ctx, int x, int y);
-grid_pos   hit_grid_pixel_to_cell(hit_grid *ctx, int x, int y);
+void           hit_grid_init(hit_grid *ctx, int hight, int width);
+int            hit_grid_push(hit_grid *ctx, int x, int y, hit_event event);
+hit_event*     hit_grid_get(hit_grid *ctx, int x, int y);
+hit_grid_pos   hit_grid_pixel_to_cell(hit_grid *ctx, int x, int y);
 
 #endif // __EVENT__
