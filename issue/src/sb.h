@@ -12,6 +12,7 @@ typedef struct {
     size_t cap;
 } string_builder;
 
+void trim(char *str);
 string_builder *sb_create(void);
 void sb_append(string_builder *sb, const char *fmt, ...);
 void sb_free(string_builder *sb);

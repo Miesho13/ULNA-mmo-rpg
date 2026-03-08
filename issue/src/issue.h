@@ -26,5 +26,6 @@ typedef struct {
 
 void issue_viewer(void);
 void issue_append(char *issue_name);
+int  issue_init(int argc, char** argv);
 
 #endif // _ISSUE_
