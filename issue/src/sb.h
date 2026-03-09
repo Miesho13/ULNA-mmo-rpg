@@ -12,6 +12,11 @@ typedef struct {
     size_t cap;
 } string_builder;
 
+#define _SET_RED   "\x1b[31m"
+#define _SET_RESET "\x1b[0m"
+
+#define SET_RED(s) _SET_RED s _SET_RESET
+
 void trim(char *str);
 string_builder *sb_create(void);
 void sb_append(string_builder *sb, const char *fmt, ...);

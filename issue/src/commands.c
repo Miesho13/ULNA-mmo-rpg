@@ -18,7 +18,9 @@ int commands_service(int argc, char **argv)
 
     for (uint32_t command_idx = 0; command_idx < commands_count; command_idx++) {
         if (strcmp(global_commands[command_idx].name, argv[1]) == 0) {
-            if (global_commands[command_idx].command) ret = global_commands[command_idx].command(argc, argv);
+            if (global_commands[command_idx].command) { 
+                ret = global_commands[command_idx].command(argc, argv);
+            }
             break;
         }
     }

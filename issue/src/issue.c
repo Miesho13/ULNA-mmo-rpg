@@ -53,7 +53,7 @@ int issue_init(int argc, char** argv)
     (void)argv;
 
     if (is_dir_exist(".issues") == DIR_OK) {
-        fprintf(stderr, "ERR: Can't finde .issues base\nCreate one or use:\n\tissues init\n");
+        fprintf(stderr, "[%s] issue init .issues file currently exists\n", SET_RED("ERR"));
         return 1;
     }
 

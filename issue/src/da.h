@@ -7,18 +7,18 @@
 #define DECLTYPE_CAST(T)
 #define DA_INIT_CAP (255)
 
-#define da_reserve(da, expected_capacity)                                                  \
-    do {                                                                                   \
-        if ((expected_capacity) > (da)->capacity) {                                        \
-            if ((da)->capacity == 0) {                                                     \
-                (da)->capacity = DA_INIT_CAP;                                              \
-            }                                                                              \
-            while ((expected_capacity) > (da)->capacity) {                                 \
-                (da)->capacity *= 2;                                                       \
-            }                                                                              \
+#define da_reserve(da, expected_capacity)                                                                        \
+    do {                                                                                                         \
+        if ((expected_capacity) > (da)->capacity) {                                                              \
+            if ((da)->capacity == 0) {                                                                           \
+                (da)->capacity = DA_INIT_CAP;                                                                    \
+            }                                                                                                    \
+            while ((expected_capacity) > (da)->capacity) {                                                       \
+                (da)->capacity *= 2;                                                                             \
+            }                                                                                                    \
             (da)->items = DECLTYPE_CAST((da)->items)realloc((da)->items, (da)->capacity * sizeof(*(da)->items)); \
-            assert((da)->items != NULL && "Memory cant be alloc");                         \
-        }                                                                                  \
+            assert((da)->items != NULL && "Memory cant be alloc");                                               \
+        }                                                                                                        \
     } while (0)
 
 #define da_append(da, item)                                                             \
