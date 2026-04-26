@@ -42,8 +42,13 @@ static struct {
         } right_bar;
 
         struct {
+            int start_x;
+            int start_y;
+
+            int width;
+            int height;
+
             int HEIGHT;
-            int border_margin;
         } top_bar;
 
         struct {
@@ -80,7 +85,11 @@ static struct {
         },
 
         .top_bar = {
-            .HEIGHT = 50,
+            .start_x = 0,
+            .start_y = 0,
+
+            .width = 0,
+            .height = 50,
         },
 
         .background = WIN_BACKROUND,
@@ -191,12 +200,11 @@ static inline void render_top_bar_background(int start_x, int start_y, int width
 
 static inline void render_top_bar(void) 
 {
-    // RENDERER FOR TOP BAR
-    const int start_x = 0;
-    const int start_y = 0;
+    const int start_x = CORE.ui.top_bar.start_x;
+    const int start_y = CORE.ui.top_bar.start_y;
 
     const int width  = CORE.window_size.WIDTH;
-    const int height = CORE.ui.top_bar.HEIGHT;
+    const int height = CORE.ui.top_bar.height;
 
     platform_scissor_mode(start_x, start_y, width, height);
     render_top_bar_background(start_x, start_y, width, height);
@@ -230,9 +238,9 @@ static inline void render(void)
     platform_draw_prolog();
     platform_clear_background(CORE.ui.background);
 
+    render_canvas();
     render_top_bar();
     render_right_bar();
-    render_canvas();
     render_backlight();
 
     platform_draw_epilog();
@@ -271,11 +279,18 @@ static inline void polute_grid_on_screan(void)
     }
 }
 
+
+static void init_grid(void)
+{
+    hit_grid_init(&CORE.hit_grid_ctx, 16, 16); 
+}
+
 void map_edit_init(void) 
 {
     platform_init_window(CORE.window_size.WIDTH, CORE.window_size.HEIGHT, "ulma-map-edit", 144);
     load_sprite(&CORE.sprite_ctx);
-    hit_grid_init(&CORE.hit_grid_ctx, 16, 16);
+    init_grid();
+
     // polute_grid_on_screan();
 }
 
