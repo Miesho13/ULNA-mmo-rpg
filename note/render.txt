@@ -1,0 +1,65 @@
+-- UDATE CLINET COMUNICATION --
+
+Deafult control flow bettwen server-client is base on client trying POST UPDATE frame on server.
+Server valid update and return state frame for client. Client render bas on that state. 
+
+CLIENT                                    SERVER 
+------------------------------------------------
+POST UPDATE | ---------------------> |  
+            |                        | IF DPOS OK
+            | <--------------------- | POST STATE FRAME
+RENDER      |                        |
+SCENE       |                        |
+            |                        |
+
+
+POST UPDATE:
+-----------------------------------------------------------
+UPDATE [
+    - UPDATE [u8] 
+    - DIFF POSYTION [i8 i8] 
+    - EVENT_COUNT [u8] 
+    - EVENT ARRAY ...
+]
+    UPDATE_FRAME:
+        u8: UPDATE - value determinate this is start of update frame 
+
+    DIFF POS:
+        i8: x - value represents difference in position on the x axis
+        i8: y - value represents difference in position on the y axis
+
+    EVENT COUNT:
+        u8: count - how many event is read
+        
+
+    EVENTS ARRAY (X byte per element):
+        u8: events - events 
+
+STATE FRAME
+-----------------------------------------------------------
+
+STATTE [
+    - BACKGRAUND ARRAY
+    - FORGRAUND ARRAY 
+    - NPC ARRAY
+    - PLAYER ARRAY
+    - EVENT_COUNT [u8] 
+    - EVENT ARRAY ... 
+]
+
+    BACKGRAUND ARRAY:
+        - ID of each element need to be draw as bacgraund tails.
+
+    FOREGROUND ARRAY:
+        - ID of each physical element that is neither a player nor an NPC.
+
+    NPC ARRAY:
+        - ID of each non player character
+
+    PLAYER ARRAY:
+        - State of each player visable in screan
+
+    EVENT COUNT:
+        u16: count - how many event is to read.
+
+    EVENT ARRAY 
