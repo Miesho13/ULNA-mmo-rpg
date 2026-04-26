@@ -78,13 +78,6 @@ inline static void draw_scene_picker(void) {
     platform_draw_epilog();
 }
 
-int scene_pick() {
-    v2_i32 pos = {0};
-    if (platform_mouse_button_pressed(PLATFORM_MOUSE_BUTTON_LEFT)) {
-        v2_i32 pos = platform_get_mause();
-    }
-}
-
 void init(app_context* app) {
     if (CORE.is_init) {
         return;
@@ -105,5 +98,4 @@ void scene_login_screan(app_context *app) {
     }
     init(app);
     draw_scene_picker();
-    scene_pick();
 }
